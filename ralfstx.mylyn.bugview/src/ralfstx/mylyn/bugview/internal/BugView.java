@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -62,9 +63,21 @@ public class BugView extends ViewPart {
     viewer.setContentProvider( new ArrayContentProvider() );
   }
 
-  protected void refreshViewer() {
+  private void refreshViewer() {
     Collection<ITask> tasks = MylynBridge.getAllTasks();
     viewer.setInput( tasks );
+    updateStatusBar();
+  }
+
+  private void updateStatusBar() {
+    String message = null;
+    Object input = viewer.getInput();
+    if( input instanceof Collection ) {
+      Collection<?> collection = (Collection<?>)input;
+      message = collection.size() + " bugs";
+    }
+    IStatusLineManager statusLineManager = getViewSite().getActionBars().getStatusLineManager();
+    statusLineManager.setMessage( message );
   }
 
   static class TaskLabelProvider extends LabelProvider implements ITableLabelProvider {
