@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Bugs Ui
-Bundle-SymbolicName: ralfstx.mylyn.bugview
+Bundle-SymbolicName: ralfstx.mylyn.bugview;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: ralfstx.mylyn.bugview.internal.Activator
 Require-Bundle: org.eclipse.ui,
