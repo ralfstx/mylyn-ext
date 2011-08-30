@@ -1,6 +1,7 @@
 package ralfstx.mylyn.bugview.internal;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -11,6 +12,8 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -32,24 +35,13 @@ public class BugView extends ViewPart {
   public void createPartControl( Composite parent ) {
     parent.setLayout( GridLayoutFactory.fillDefaults().create() );
     createTableViewer( parent );
-    refreshViewer();
     makeActions();
+    refreshViewer();
   }
 
   @Override
   public void setFocus() {
     viewer.getControl().setFocus();
-  }
-
-  private void makeActions() {
-    ImageDescriptor refreshImage = Activator.getImageDescriptor( "/icons/refresh.gif" );
-    IAction refreshAction = new Action( "Refresh", refreshImage ) {
-      @Override
-      public void run() {
-        refreshViewer();
-      }
-    };
-    getViewSite().getActionBars().getToolBarManager().add( refreshAction );
   }
 
   private void createTableViewer( Composite parent ) {
@@ -61,6 +53,18 @@ public class BugView extends ViewPart {
     viewer = new TableViewer( table );
     viewer.setLabelProvider( new TaskLabelProvider() );
     viewer.setContentProvider( new ArrayContentProvider() );
+    viewer.setComparator( new TaskLastModifiedComparator() );
+  }
+
+  private void makeActions() {
+    ImageDescriptor refreshImage = Activator.getImageDescriptor( "/icons/refresh.gif" );
+    IAction refreshAction = new Action( "Refresh", refreshImage ) {
+      @Override
+      public void run() {
+        refreshViewer();
+      }
+    };
+    getViewSite().getActionBars().getToolBarManager().add( refreshAction );
   }
 
   private void refreshViewer() {
@@ -107,6 +111,29 @@ public class BugView extends ViewPart {
       return result;
     }
 
+  }
+
+  private static final class TaskLastModifiedComparator extends ViewerComparator {
+    @Override
+    public int compare( Viewer viewer, Object element1, Object element2 ) {
+      int result = 0;
+      if( element1 instanceof ITask && element2 instanceof ITask ) {
+        result = compareModificationDate( (ITask)element1, (ITask)element2 ) * -1;
+      }
+      return result;
+    }
+
+    private int compareModificationDate( ITask task1, ITask task2 ) {
+      int result;
+      Date modDate1 = task1.getModificationDate();
+      Date modDate2 = task2.getModificationDate();
+      if( modDate1 == null ) {
+        result = modDate2 == null ? 0 : -1;
+      } else {
+        result = modDate2 == null ? 1 : modDate1.compareTo( modDate2 );
+      }
+      return result;
+    }
   }
 
 }
