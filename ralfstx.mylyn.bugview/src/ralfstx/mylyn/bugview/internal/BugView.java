@@ -2,6 +2,8 @@ package ralfstx.mylyn.bugview.internal;
 
 import java.util.Collection;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -29,11 +31,24 @@ public class BugView extends ViewPart {
   public void createPartControl( Composite parent ) {
     parent.setLayout( GridLayoutFactory.fillDefaults().create() );
     createTableViewer( parent );
+    refreshViewer();
+    makeActions();
   }
 
   @Override
   public void setFocus() {
     viewer.getControl().setFocus();
+  }
+
+  private void makeActions() {
+    ImageDescriptor refreshImage = Activator.getImageDescriptor( "/icons/refresh.gif" );
+    IAction refreshAction = new Action( "Refresh", refreshImage ) {
+      @Override
+      public void run() {
+        refreshViewer();
+      }
+    };
+    getViewSite().getActionBars().getToolBarManager().add( refreshAction );
   }
 
   private void createTableViewer( Composite parent ) {
@@ -45,6 +60,9 @@ public class BugView extends ViewPart {
     viewer = new TableViewer( table );
     viewer.setLabelProvider( new TaskLabelProvider() );
     viewer.setContentProvider( new ArrayContentProvider() );
+  }
+
+  protected void refreshViewer() {
     Collection<ITask> tasks = MylynBridge.getAllTasks();
     viewer.setInput( tasks );
   }
