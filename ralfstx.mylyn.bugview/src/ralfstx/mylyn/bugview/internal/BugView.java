@@ -8,7 +8,9 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -16,6 +18,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -54,6 +57,20 @@ public class BugView extends ViewPart {
     viewer.setLabelProvider( new TaskLabelProvider() );
     viewer.setContentProvider( new ArrayContentProvider() );
     viewer.setComparator( new TaskLastModifiedComparator() );
+    addStrikeThrough();
+  }
+
+  private void addStrikeThrough() {
+    StrikeThroughProvider strikeThroughProvider = new StrikeThroughProvider() {
+      public boolean getStrikeThrough( Object element ) {
+        if( element instanceof ITask ) {
+          ITask task = (ITask)element;
+          return task.isCompleted();
+        }
+        return false;
+      }
+    };
+    TableViewerStrikeThroughUtil.attach( strikeThroughProvider, viewer );
   }
 
   private void makeActions() {
@@ -84,7 +101,9 @@ public class BugView extends ViewPart {
     statusLineManager.setMessage( message );
   }
 
-  static class TaskLabelProvider extends LabelProvider implements ITableLabelProvider {
+  static class TaskLabelProvider extends LabelProvider implements ITableLabelProvider,
+      IFontProvider
+  {
 
     private static final ImageDescriptor TASK_ICON = Activator.getImageDescriptor( "/icons/task.gif" );
 
@@ -109,6 +128,16 @@ public class BugView extends ViewPart {
         }
       }
       return result;
+    }
+
+    public Font getFont( Object element ) {
+      if( element instanceof ITask ) {
+        ITask task = (ITask)element;
+        if( task.getSynchronizationState().isIncoming() ) {
+          return JFaceResources.getFontRegistry().getBold( JFaceResources.DEFAULT_FONT );
+        }
+      }
+      return null;
     }
 
   }
