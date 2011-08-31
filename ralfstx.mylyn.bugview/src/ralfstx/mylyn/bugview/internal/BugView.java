@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2011 Ralf Sternberg.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Ralf Sternberg - initial implementation and API
+ ******************************************************************************/
 package ralfstx.mylyn.bugview.internal;
 
 import java.util.Collection;
@@ -142,7 +152,7 @@ public class BugView extends ViewPart {
 
   }
 
-  private static final class TaskLastModifiedComparator extends ViewerComparator {
+  static final class TaskLastModifiedComparator extends ViewerComparator {
     @Override
     public int compare( Viewer viewer, Object element1, Object element2 ) {
       int result = 0;
@@ -152,7 +162,7 @@ public class BugView extends ViewPart {
       return result;
     }
 
-    private int compareModificationDate( ITask task1, ITask task2 ) {
+    private static int compareModificationDate( ITask task1, ITask task2 ) {
       int result;
       Date modDate1 = task1.getModificationDate();
       Date modDate2 = task2.getModificationDate();
