@@ -16,7 +16,6 @@ import java.util.Date;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -26,12 +25,17 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
 
@@ -41,10 +45,13 @@ public class BugView extends ViewPart {
   static final int COL_TITLE = 1;
 
   private TableViewer viewer;
+  private Text searchField;
+  private String searchTerm = "";
 
   @Override
   public void createPartControl( Composite parent ) {
-    parent.setLayout( GridLayoutFactory.fillDefaults().create() );
+    parent.setLayout( createMainLayout() );
+    createSearchTextField( parent );
     createTableViewer( parent );
     makeActions();
     refreshViewer();
@@ -53,6 +60,18 @@ public class BugView extends ViewPart {
   @Override
   public void setFocus() {
     viewer.getControl().setFocus();
+  }
+
+  private void createSearchTextField( Composite parent ) {
+    searchField = new Text( parent, SWT.SEARCH | SWT.CANCEL | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
+    searchField.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+    searchField.addSelectionListener( new SelectionAdapter() {
+      @Override
+      public void widgetDefaultSelected( SelectionEvent e ) {
+        searchTerm = searchField.getText().trim();
+        viewer.refresh( false );
+      }
+    } );
   }
 
   private void createTableViewer( Composite parent ) {
@@ -65,6 +84,7 @@ public class BugView extends ViewPart {
     viewer.setLabelProvider( new TaskLabelProvider() );
     viewer.setContentProvider( new ArrayContentProvider() );
     viewer.setComparator( new TaskLastModifiedComparator() );
+    viewer.addFilter( new TaskFilter() );
     addStrikeThrough();
     addDoubleClickBehavior();
   }
@@ -133,7 +153,15 @@ public class BugView extends ViewPart {
     statusLineManager.setMessage( message );
   }
 
-  static final class TaskLastModifiedComparator extends ViewerComparator {
+  private static GridLayout createMainLayout() {
+    GridLayout mainLayout = new GridLayout();
+    mainLayout.marginWidth = 0;
+    mainLayout.marginHeight = 0;
+    mainLayout.verticalSpacing = 2;
+    return mainLayout;
+  }
+
+  private static final class TaskLastModifiedComparator extends ViewerComparator {
     @Override
     public int compare( Viewer viewer, Object element1, Object element2 ) {
       int result = 0;
@@ -153,6 +181,20 @@ public class BugView extends ViewPart {
         result = modDate2 == null ? 1 : modDate1.compareTo( modDate2 );
       }
       return result;
+    }
+  }
+
+  private final class TaskFilter extends ViewerFilter {
+    @Override
+    public boolean select( Viewer viewer, Object parentElement, Object element ) {
+      if( searchTerm.length() == 0 ) {
+        return true;
+      }
+      if( element instanceof ITask ) {
+        ITask task = (ITask)element;
+        return task.getSummary().contains( searchTerm );
+      }
+      return false;
     }
   }
 
