@@ -15,6 +15,7 @@ import java.util.Collection;
 
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.ITask;
 
 
@@ -24,6 +25,10 @@ class MylynBridge {
   static Collection<ITask> getAllTasks() {
     Collection<AbstractTask> tasks = TasksUiPlugin.getTaskList().getAllTasks();
     return new ArrayList<ITask>( tasks );
+  }
+
+  static void openTaskInEditor( ITask selectedTask ) {
+    TasksUiInternal.openTask( selectedTask, selectedTask.getTaskId() );
   }
 
 }

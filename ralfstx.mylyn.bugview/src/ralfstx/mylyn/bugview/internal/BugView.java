@@ -20,9 +20,13 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IFontProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -68,6 +72,7 @@ public class BugView extends ViewPart {
     viewer.setContentProvider( new ArrayContentProvider() );
     viewer.setComparator( new TaskLastModifiedComparator() );
     addStrikeThrough();
+    addDoubleClickBehavior();
   }
 
   private void addStrikeThrough() {
@@ -81,6 +86,17 @@ public class BugView extends ViewPart {
       }
     };
     TableViewerStrikeThroughUtil.attach( strikeThroughProvider, viewer );
+  }
+
+  private void addDoubleClickBehavior() {
+    viewer.addDoubleClickListener( new IDoubleClickListener() {
+      public void doubleClick( DoubleClickEvent event ) {
+        ITask selectedTask = getSelectedTask();
+        if( selectedTask != null ) {
+          MylynBridge.openTaskInEditor( selectedTask );
+        }
+      }
+    } );
   }
 
   private void makeActions() {
@@ -98,6 +114,18 @@ public class BugView extends ViewPart {
     Collection<ITask> tasks = MylynBridge.getAllTasks();
     viewer.setInput( tasks );
     updateStatusBar();
+  }
+
+  private ITask getSelectedTask() {
+    ISelection selection = viewer.getSelection();
+    if( !selection.isEmpty() && selection instanceof StructuredSelection ) {
+      StructuredSelection structuredSelection = (StructuredSelection)selection;
+      Object element = structuredSelection.getFirstElement();
+      if( element instanceof ITask ) {
+        return (ITask)element;
+      }
+    }
+    return null;
   }
 
   private void updateStatusBar() {
