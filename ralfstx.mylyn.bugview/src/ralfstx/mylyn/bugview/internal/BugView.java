@@ -74,6 +74,7 @@ public class BugView extends ViewPart {
         String query = searchField.getText().trim();
         searchFilters = queryParser.parse( query );
         viewer.refresh( false );
+        updateStatusBar();
       }
     } );
   }
@@ -148,11 +149,8 @@ public class BugView extends ViewPart {
 
   private void updateStatusBar() {
     String message = null;
-    Object input = viewer.getInput();
-    if( input instanceof Collection ) {
-      Collection<?> collection = (Collection<?>)input;
-      message = collection.size() + " bugs";
-    }
+    int items = viewer.getTable().getItemCount();
+    message = items + " bugs";
     IStatusLineManager statusLineManager = getViewSite().getActionBars().getStatusLineManager();
     statusLineManager.setMessage( message );
   }
