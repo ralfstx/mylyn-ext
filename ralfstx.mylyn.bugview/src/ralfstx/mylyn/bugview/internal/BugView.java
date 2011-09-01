@@ -11,7 +11,9 @@
 package ralfstx.mylyn.bugview.internal;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -46,7 +48,8 @@ public class BugView extends ViewPart {
 
   private TableViewer viewer;
   private Text searchField;
-  private String searchTerm = "";
+  private Collection<String> searchTerms = Collections.emptyList();
+  private final SearchQueryParser queryParser = new SearchQueryParser();
 
   @Override
   public void createPartControl( Composite parent ) {
@@ -66,9 +69,11 @@ public class BugView extends ViewPart {
     searchField = new Text( parent, SWT.SEARCH | SWT.CANCEL | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
     searchField.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
     searchField.addSelectionListener( new SelectionAdapter() {
+
       @Override
       public void widgetDefaultSelected( SelectionEvent e ) {
-        searchTerm = searchField.getText().trim();
+        String query = searchField.getText().trim();
+        searchTerms = queryParser.parse( query );
         viewer.refresh( false );
       }
     } );
@@ -187,12 +192,18 @@ public class BugView extends ViewPart {
   private final class TaskFilter extends ViewerFilter {
     @Override
     public boolean select( Viewer viewer, Object parentElement, Object element ) {
-      if( searchTerm.length() == 0 ) {
+      if( searchTerms.size() == 0 ) {
         return true;
       }
       if( element instanceof ITask ) {
         ITask task = (ITask)element;
-        return task.getSummary().contains( searchTerm );
+        String summary = task.getSummary().toLowerCase( Locale.ENGLISH );
+        for( String searchTerm : searchTerms ) {
+          if( !summary.contains( searchTerm ) ) {
+            return false;
+          }
+        }
+        return true;
       }
       return false;
     }
