@@ -10,24 +10,11 @@
  ******************************************************************************/
 package ralfstx.mylyn.bugview.internal;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import org.eclipse.mylyn.tasks.core.ITask;
 
 
-public class SearchQueryParser {
+public interface TaskFilter {
 
-  public Collection<TaskFilter> parse( String query ) {
-    if( query == null ) {
-      throw new NullPointerException( "null parameter: query" );
-    }
-    ArrayList<TaskFilter> result = new ArrayList<TaskFilter>();
-    String[] parts = query.split( "\\s+" );
-    for( String part : parts ) {
-      if( part.length() > 0 ) {
-        result.add( new NameOrIdFilter( part ) );
-      }
-    }
-    return result;
-  }
+  boolean matches( ITask task );
 
 }

@@ -13,7 +13,6 @@ package ralfstx.mylyn.bugview.internal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Locale;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -48,7 +47,7 @@ public class BugView extends ViewPart {
 
   private TableViewer viewer;
   private Text searchField;
-  private Collection<String> searchTerms = Collections.emptyList();
+  private Collection<TaskFilter> searchFilters = Collections.emptyList();
   private final SearchQueryParser queryParser = new SearchQueryParser();
 
   @Override
@@ -73,7 +72,7 @@ public class BugView extends ViewPart {
       @Override
       public void widgetDefaultSelected( SelectionEvent e ) {
         String query = searchField.getText().trim();
-        searchTerms = queryParser.parse( query );
+        searchFilters = queryParser.parse( query );
         viewer.refresh( false );
       }
     } );
@@ -89,7 +88,7 @@ public class BugView extends ViewPart {
     viewer.setLabelProvider( new TaskLabelProvider() );
     viewer.setContentProvider( new ArrayContentProvider() );
     viewer.setComparator( new TaskLastModifiedComparator() );
-    viewer.addFilter( new TaskFilter() );
+    viewer.addFilter( new TaskViewerFilter() );
     addStrikeThrough();
     addDoubleClickBehavior();
   }
@@ -189,17 +188,13 @@ public class BugView extends ViewPart {
     }
   }
 
-  private final class TaskFilter extends ViewerFilter {
+  private final class TaskViewerFilter extends ViewerFilter {
     @Override
     public boolean select( Viewer viewer, Object parentElement, Object element ) {
-      if( searchTerms.size() == 0 ) {
-        return true;
-      }
       if( element instanceof ITask ) {
         ITask task = (ITask)element;
-        String summary = task.getSummary().toLowerCase( Locale.ENGLISH );
-        for( String searchTerm : searchTerms ) {
-          if( !summary.contains( searchTerm ) ) {
+        for( TaskFilter filter : searchFilters ) {
+          if( !filter.matches( task ) ) {
             return false;
           }
         }

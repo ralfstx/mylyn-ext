@@ -10,11 +10,10 @@
  ******************************************************************************/
 package ralfstx.mylyn.bugview.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Locale;
 
 import org.junit.Test;
 
@@ -32,7 +31,7 @@ public class SearchQueryParser_Test {
   public void testParse_withEmptyString() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
-    Collection<String> result = parser.parse( "" );
+    Collection<TaskFilter> result = parser.parse( "" );
 
     assertEquals( 0, result.size() );
   }
@@ -41,55 +40,71 @@ public class SearchQueryParser_Test {
   public void testParse_withSingleString() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
-    Collection<String> result = parser.parse( "foo" );
+    Collection<TaskFilter> result = parser.parse( "foo" );
 
-    assertEquals( 1, result.size() );
-    assertTrue( result.contains( "foo" ) );
+    ArrayList<String> expected = expectFilters( "nameOrId:foo" );
+    assertFiltersEquals( expected, result );
   }
 
   @Test
   public void testParse_withTwoStrings() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
-    Collection<String> result = parser.parse( "foo bar" );
+    Collection<TaskFilter> result = parser.parse( "foo bar" );
 
-    assertEquals( 2, result.size() );
-    assertTrue( result.contains( "foo" ) );
-    assertTrue( result.contains( "bar" ) );
+    ArrayList<String> expected = expectFilters( "nameOrId:foo", "nameOrId:bar" );
+    assertFiltersEquals( expected, result );
   }
 
   @Test
   public void testParse_stripsWhitespace() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
-    Collection<String> result = parser.parse( " foo\t  " );
+    Collection<TaskFilter> result = parser.parse( " foo\t  " );
 
-    assertTrue( result.contains( "foo" ) );
+    ArrayList<String> expected = expectFilters( "nameOrId:foo" );
+    assertFiltersEquals( expected, result );
   }
 
-  @Test
-  public void testParse_convertsStringsToLowerCase() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
-    Collection<String> result = parser.parse( "Foo" );
-
-    assertTrue( result.contains( "foo" ) );
-  }
-
-  @Test
-  public void testParse_lowerCaseIgnoresDefaultLocale() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-    Locale defaultLocale = Locale.getDefault();
-    Collection<String> result;
-
-    try {
-      Locale.setDefault( new Locale( "tr" ) );
-      result = parser.parse( "I" );
-    } finally {
-      Locale.setDefault( defaultLocale );
+  private static ArrayList<String> expectFilters( String... expected ) {
+    ArrayList<String> result = new ArrayList<String>();
+    for( String string : expected ) {
+      result.add( string );
     }
-
-    assertTrue( result.contains( "i" ) );
+    return result;
   }
 
+  private static void assertFiltersEquals( Collection<String> expected,
+      Collection<TaskFilter> actual )
+  {
+    ArrayList<String> actualStrings = new ArrayList<String>();
+    for( TaskFilter filter : actual ) {
+      actualStrings.add( filter.toString() );
+    }
+    for( String expectedString : expected ) {
+      if( !actualStrings.contains( expectedString ) ) {
+        String joinedActual = "[ " + join( actualStrings ) + " ]";
+        fail( "Expected \"" + expectedString + "\" not contained in " + joinedActual );
+      }
+    }
+    for( String actualString : actualStrings ) {
+      if( !expected.contains( actualString ) ) {
+        String joinedActual = "[ " + join( actualStrings ) + " ]";
+        fail( "Unexpected \"" + actualString + "\" contained in " + joinedActual );
+      }
+    }
+  }
+
+  private static String join( ArrayList<String> strings ) {
+    StringBuilder buffer = new StringBuilder();
+    for( String string : strings ) {
+      if( buffer.length() > 0 ) {
+        buffer.append( ", " );
+      }
+      buffer.append( '"' );
+      buffer.append( string );
+      buffer.append( '"' );
+    }
+    return buffer.toString();
+  }
 }
