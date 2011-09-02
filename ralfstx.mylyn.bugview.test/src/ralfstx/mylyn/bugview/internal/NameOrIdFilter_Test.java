@@ -108,6 +108,12 @@ public class NameOrIdFilter_Test {
     assertTrue( result );
   }
 
+  @Test
+  public void testToString() throws Exception {
+    NameOrIdFilter filter = new NameOrIdFilter( "foo" );
+    assertEquals( "nameOrId(\"foo\")", filter.toString() );
+  }
+
   private static ITask mockTaskWithSummaryAndId( String id, String summary ) {
     ITask task = mock( ITask.class );
     when( task.getTaskId() ).thenReturn( id );

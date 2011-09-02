@@ -11,12 +11,11 @@
 package ralfstx.mylyn.bugview.internal;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 
 public class SearchQueryParser {
 
-  public Collection<TaskFilter> parse( String query ) {
+  public TaskFilter parse( String query ) {
     if( query == null ) {
       throw new NullPointerException( "null parameter: query" );
     }
@@ -27,7 +26,9 @@ public class SearchQueryParser {
         result.add( new NameOrIdFilter( part ) );
       }
     }
-    return result;
+    TaskFilter[] components = new TaskFilter[ result.size() ];
+    result.toArray( components );
+    return new AndFilter( components );
   }
 
 }

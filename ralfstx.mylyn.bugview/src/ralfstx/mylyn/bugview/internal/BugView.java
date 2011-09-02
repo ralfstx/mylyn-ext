@@ -11,7 +11,6 @@
 package ralfstx.mylyn.bugview.internal;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 
 import org.eclipse.jface.action.Action;
@@ -47,7 +46,7 @@ public class BugView extends ViewPart {
 
   private TableViewer viewer;
   private Text searchField;
-  private Collection<TaskFilter> searchFilters = Collections.emptyList();
+  private TaskFilter searchFilter = new AndFilter();
   private final SearchQueryParser queryParser = new SearchQueryParser();
 
   @Override
@@ -72,7 +71,7 @@ public class BugView extends ViewPart {
       @Override
       public void widgetDefaultSelected( SelectionEvent e ) {
         String query = searchField.getText().trim();
-        searchFilters = queryParser.parse( query );
+        searchFilter = queryParser.parse( query );
         viewer.refresh( false );
         updateStatusBar();
       }
@@ -191,12 +190,7 @@ public class BugView extends ViewPart {
     public boolean select( Viewer viewer, Object parentElement, Object element ) {
       if( element instanceof ITask ) {
         ITask task = (ITask)element;
-        for( TaskFilter filter : searchFilters ) {
-          if( !filter.matches( task ) ) {
-            return false;
-          }
-        }
-        return true;
+        return searchFilter.matches( task );
       }
       return false;
     }
