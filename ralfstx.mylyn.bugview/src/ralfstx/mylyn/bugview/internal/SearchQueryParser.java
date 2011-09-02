@@ -15,20 +15,20 @@ import java.util.ArrayList;
 
 public class SearchQueryParser {
 
-  public TaskFilter parse( String query ) {
+  public TaskMatcher parse( String query ) {
     if( query == null ) {
       throw new NullPointerException( "null parameter: query" );
     }
-    ArrayList<TaskFilter> result = new ArrayList<TaskFilter>();
+    ArrayList<TaskMatcher> result = new ArrayList<TaskMatcher>();
     String[] parts = query.split( "\\s+" );
     for( String part : parts ) {
       if( part.length() > 0 ) {
-        result.add( new NameOrIdFilter( part ) );
+        result.add( new NameOrIdMatcher( part ) );
       }
     }
-    TaskFilter[] components = new TaskFilter[ result.size() ];
+    TaskMatcher[] components = new TaskMatcher[ result.size() ];
     result.toArray( components );
-    return new AndFilter( components );
+    return new AndMatcher( components );
   }
 
 }

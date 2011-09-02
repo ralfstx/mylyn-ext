@@ -13,7 +13,7 @@ package ralfstx.mylyn.bugview.internal;
 import org.eclipse.mylyn.tasks.core.ITask;
 
 
-public interface TaskFilter {
+public interface TaskMatcher {
 
   boolean matches( ITask task );
 

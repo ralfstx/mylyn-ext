@@ -12,9 +12,6 @@ package ralfstx.mylyn.bugview.internal;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.junit.Test;
 
 
@@ -31,50 +28,43 @@ public class SearchQueryParser_Test {
   public void testParse_withEmptyString() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
-    TaskFilter result = parser.parse( "" );
+    TaskMatcher result = parser.parse( "" );
 
-    assertFilterEquals( new AndFilter(), result );
+    assertMatcherEquals( new AndMatcher(), result );
   }
 
   @Test
   public void testParse_withSingleString() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
-    TaskFilter result = parser.parse( "foo" );
+    TaskMatcher result = parser.parse( "foo" );
 
-    AndFilter expected = new AndFilter( new NameOrIdFilter( "foo" ) );
-    assertFilterEquals( expected, result );
+    AndMatcher expected = new AndMatcher( new NameOrIdMatcher( "foo" ) );
+    assertMatcherEquals( expected, result );
   }
 
   @Test
   public void testParse_withTwoStrings() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
-    TaskFilter result = parser.parse( "foo bar" );
+    TaskMatcher result = parser.parse( "foo bar" );
 
-    AndFilter expected = new AndFilter( new NameOrIdFilter( "foo" ), new NameOrIdFilter( "bar" ) );
-    assertFilterEquals( expected, result );
+    AndMatcher expected = new AndMatcher( new NameOrIdMatcher( "foo" ),
+                                          new NameOrIdMatcher( "bar" ) );
+    assertMatcherEquals( expected, result );
   }
 
   @Test
   public void testParse_stripsWhitespace() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
-    TaskFilter result = parser.parse( " foo\t  " );
+    TaskMatcher result = parser.parse( " foo\t  " );
 
-    AndFilter expected = new AndFilter( new NameOrIdFilter( "foo" ) );
-    assertFilterEquals( expected, result );
+    AndMatcher expected = new AndMatcher( new NameOrIdMatcher( "foo" ) );
+    assertMatcherEquals( expected, result );
   }
 
-  private static Collection<TaskFilter> expectFilters( TaskFilter... expected ) {
-    ArrayList<TaskFilter> result = new ArrayList<TaskFilter>();
-    for( TaskFilter filter : expected ) {
-      result.add( filter );
-    }
-    return result;
-  }
-
-  private static void assertFilterEquals( TaskFilter expected, TaskFilter actual ) {
+  private static void assertMatcherEquals( TaskMatcher expected, TaskMatcher actual ) {
     assertEquals( expected.toString(), actual.toString() );
   }
 }

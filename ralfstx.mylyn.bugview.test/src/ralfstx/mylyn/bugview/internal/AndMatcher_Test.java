@@ -17,45 +17,45 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.junit.Test;
 
 
-public class AndFilter_Test {
+public class AndMatcher_Test {
 
   @Test( expected = NullPointerException.class )
   public void testMatches_null() throws Exception {
-    AndFilter filter = new AndFilter();
+    AndMatcher matcher = new AndMatcher();
 
-    filter.matches( null );
+    matcher.matches( null );
   }
 
   @Test
   public void testMatches_withoutComponents() throws Exception {
-    AndFilter filter = new AndFilter();
+    AndMatcher matcher = new AndMatcher();
 
-    assertTrue( filter.matches( mockTaskWithSummaryAndId( "", "" ) ) );
-    assertTrue( filter.matches( mockTaskWithSummaryAndId( "23", "foo" ) ) );
+    assertTrue( matcher.matches( mockTaskWithSummaryAndId( "", "" ) ) );
+    assertTrue( matcher.matches( mockTaskWithSummaryAndId( "23", "foo" ) ) );
   }
 
   @Test
   public void testMatches_withSingleComponent() throws Exception {
-    AndFilter filter = new AndFilter( new NameOrIdFilter( "foo" ) );
+    AndMatcher matcher = new AndMatcher( new NameOrIdMatcher( "foo" ) );
 
-    assertFalse( filter.matches( mockTaskWithSummaryAndId( "", "bar" ) ) );
-    assertTrue( filter.matches( mockTaskWithSummaryAndId( "", "foo" ) ) );
+    assertFalse( matcher.matches( mockTaskWithSummaryAndId( "", "bar" ) ) );
+    assertTrue( matcher.matches( mockTaskWithSummaryAndId( "", "foo" ) ) );
   }
 
   @Test
   public void testMatches_withMultipleComponents() throws Exception {
-    AndFilter filter = new AndFilter( new NameOrIdFilter( "foo" ), new NameOrIdFilter( "bar" ) );
+    AndMatcher matcher = new AndMatcher( new NameOrIdMatcher( "foo" ), new NameOrIdMatcher( "bar" ) );
 
-    assertFalse( filter.matches( mockTaskWithSummaryAndId( "", "bar" ) ) );
-    assertFalse( filter.matches( mockTaskWithSummaryAndId( "", "foo" ) ) );
-    assertTrue( filter.matches( mockTaskWithSummaryAndId( "", "foo bar" ) ) );
+    assertFalse( matcher.matches( mockTaskWithSummaryAndId( "", "bar" ) ) );
+    assertFalse( matcher.matches( mockTaskWithSummaryAndId( "", "foo" ) ) );
+    assertTrue( matcher.matches( mockTaskWithSummaryAndId( "", "foo bar" ) ) );
   }
 
   @Test
   public void testToString() throws Exception {
-    AndFilter filter = new AndFilter( new NameOrIdFilter( "foo" ), new NameOrIdFilter( "bar" ) );
+    AndMatcher matcher = new AndMatcher( new NameOrIdMatcher( "foo" ), new NameOrIdMatcher( "bar" ) );
 
-    assertEquals( "and(nameOrId(\"foo\"),nameOrId(\"bar\"))", filter.toString() );
+    assertEquals( "and(nameOrId(\"foo\"),nameOrId(\"bar\"))", matcher.toString() );
   }
 
   private static ITask mockTaskWithSummaryAndId( String id, String summary ) {

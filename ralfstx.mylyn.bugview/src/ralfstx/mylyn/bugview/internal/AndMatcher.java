@@ -10,34 +10,41 @@
  ******************************************************************************/
 package ralfstx.mylyn.bugview.internal;
 
-import java.util.Locale;
-
 import org.eclipse.mylyn.tasks.core.ITask;
 
 
-public class NameOrIdFilter implements TaskFilter {
+public class AndMatcher implements TaskMatcher {
 
-  private final String searchString;
+  private final TaskMatcher[] components;
 
-  public NameOrIdFilter( String searchString ) {
-    this.searchString = searchString.toLowerCase( Locale.ENGLISH );
+  public AndMatcher( TaskMatcher... components ) {
+    this.components = components;
   }
 
   public boolean matches( ITask task ) {
-    String id = task.getTaskId().toLowerCase( Locale.ENGLISH );
-    if( id.startsWith( searchString ) ) {
-      return true;
+    if( task == null ) {
+      throw new NullPointerException( "parameter is null: task" );
     }
-    String summary = task.getSummary().toLowerCase( Locale.ENGLISH );
-    if( summary.contains( searchString ) ) {
-      return true;
+    for( TaskMatcher component : components ) {
+      if( !component.matches( task ) ) {
+        return false;
+      }
     }
-    return false;
+    return true;
   }
 
   @Override
   public String toString() {
-    return "nameOrId(\"" + searchString + "\")";
+    StringBuilder buffer = new StringBuilder();
+    buffer.append( "and(" );
+    for( int i = 0; i < components.length; i++ ) {
+      if( i > 0 ) {
+        buffer.append( ',' );
+      }
+      buffer.append( components[i].toString() );
+    }
+    buffer.append( ")" );
+    return buffer.toString();
   }
 
 }

@@ -46,7 +46,7 @@ public class BugView extends ViewPart {
 
   private TableViewer viewer;
   private Text searchField;
-  private TaskFilter searchFilter = new AndFilter();
+  private TaskMatcher searchMatcher = new AndMatcher();
   private final SearchQueryParser queryParser = new SearchQueryParser();
 
   @Override
@@ -71,7 +71,7 @@ public class BugView extends ViewPart {
       @Override
       public void widgetDefaultSelected( SelectionEvent e ) {
         String query = searchField.getText().trim();
-        searchFilter = queryParser.parse( query );
+        searchMatcher = queryParser.parse( query );
         viewer.refresh( false );
         updateStatusBar();
       }
@@ -190,7 +190,7 @@ public class BugView extends ViewPart {
     public boolean select( Viewer viewer, Object parentElement, Object element ) {
       if( element instanceof ITask ) {
         ITask task = (ITask)element;
-        return searchFilter.matches( task );
+        return searchMatcher.matches( task );
       }
       return false;
     }

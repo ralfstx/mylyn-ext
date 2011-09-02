@@ -19,61 +19,61 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.junit.Test;
 
 
-public class NameOrIdFilter_Test {
+public class NameOrIdMatcher_Test {
 
   @Test
   public void testMatches_withEmptyString() throws Exception {
-    NameOrIdFilter filter = new NameOrIdFilter( "" );
+    NameOrIdMatcher matcher = new NameOrIdMatcher( "" );
 
-    assertTrue( filter.matches( mockTaskWithSummaryAndId( "", "" ) ) );
-    assertTrue( filter.matches( mockTaskWithSummaryAndId( "23", "foo" ) ) );
+    assertTrue( matcher.matches( mockTaskWithSummaryAndId( "", "" ) ) );
+    assertTrue( matcher.matches( mockTaskWithSummaryAndId( "23", "foo" ) ) );
   }
 
   @Test
   public void testMatches_withExactSummary() throws Exception {
-    NameOrIdFilter filter = new NameOrIdFilter( "foo" );
+    NameOrIdMatcher matcher = new NameOrIdMatcher( "foo" );
 
-    assertFalse( filter.matches( mockTaskWithSummaryAndId( "23", "bar" ) ) );
-    assertTrue( filter.matches( mockTaskWithSummaryAndId( "23", "foo" ) ) );
+    assertFalse( matcher.matches( mockTaskWithSummaryAndId( "23", "bar" ) ) );
+    assertTrue( matcher.matches( mockTaskWithSummaryAndId( "23", "foo" ) ) );
   }
 
   @Test
   public void testMatches_withSummarySubString() throws Exception {
-    NameOrIdFilter filter = new NameOrIdFilter( "bar" );
+    NameOrIdMatcher matcher = new NameOrIdMatcher( "bar" );
 
-    assertFalse( filter.matches( mockTaskWithSummaryAndId( "23", "foo" ) ) );
-    assertTrue( filter.matches( mockTaskWithSummaryAndId( "23", "foobar" ) ) );
+    assertFalse( matcher.matches( mockTaskWithSummaryAndId( "23", "foo" ) ) );
+    assertTrue( matcher.matches( mockTaskWithSummaryAndId( "23", "foobar" ) ) );
   }
 
   @Test
   public void testMatches_withExactId() throws Exception {
-    NameOrIdFilter filter = new NameOrIdFilter( "23" );
+    NameOrIdMatcher matcher = new NameOrIdMatcher( "23" );
 
-    assertFalse( filter.matches( mockTaskWithSummaryAndId( "", "" ) ) );
-    assertFalse( filter.matches( mockTaskWithSummaryAndId( "42", "" ) ) );
-    assertTrue( filter.matches( mockTaskWithSummaryAndId( "23", "" ) ) );
+    assertFalse( matcher.matches( mockTaskWithSummaryAndId( "", "" ) ) );
+    assertFalse( matcher.matches( mockTaskWithSummaryAndId( "42", "" ) ) );
+    assertTrue( matcher.matches( mockTaskWithSummaryAndId( "23", "" ) ) );
   }
 
   @Test
   public void testMatches_withIdPrefix() throws Exception {
-    NameOrIdFilter filter = new NameOrIdFilter( "23" );
+    NameOrIdMatcher matcher = new NameOrIdMatcher( "23" );
 
-    assertFalse( filter.matches( mockTaskWithSummaryAndId( "123", "" ) ) );
-    assertTrue( filter.matches( mockTaskWithSummaryAndId( "230", "" ) ) );
+    assertFalse( matcher.matches( mockTaskWithSummaryAndId( "123", "" ) ) );
+    assertTrue( matcher.matches( mockTaskWithSummaryAndId( "230", "" ) ) );
   }
 
   @Test
   public void testMatches_caseInsensitiveId() throws Exception {
-    NameOrIdFilter filter = new NameOrIdFilter( "23aB" );
+    NameOrIdMatcher matcher = new NameOrIdMatcher( "23aB" );
 
-    assertTrue( filter.matches( mockTaskWithSummaryAndId( "23Ab", "" ) ) );
+    assertTrue( matcher.matches( mockTaskWithSummaryAndId( "23Ab", "" ) ) );
   }
 
   @Test
   public void testMatches_caseInsensitiveSummary() throws Exception {
-    NameOrIdFilter filter = new NameOrIdFilter( "fooBAR" );
+    NameOrIdMatcher matcher = new NameOrIdMatcher( "fooBAR" );
 
-    assertTrue( filter.matches( mockTaskWithSummaryAndId( "", "Foobar" ) ) );
+    assertTrue( matcher.matches( mockTaskWithSummaryAndId( "", "Foobar" ) ) );
   }
 
   @Test
@@ -83,8 +83,8 @@ public class NameOrIdFilter_Test {
 
     try {
       Locale.setDefault( new Locale( "tr" ) );
-      NameOrIdFilter filter = new NameOrIdFilter( "23iI" );
-      result = filter.matches( mockTaskWithSummaryAndId( "23Ii", "" ) );
+      NameOrIdMatcher matcher = new NameOrIdMatcher( "23iI" );
+      result = matcher.matches( mockTaskWithSummaryAndId( "23Ii", "" ) );
     } finally {
       Locale.setDefault( defaultLocale );
     }
@@ -99,8 +99,8 @@ public class NameOrIdFilter_Test {
 
     try {
       Locale.setDefault( new Locale( "tr" ) );
-      NameOrIdFilter filter = new NameOrIdFilter( "Int min" );
-      result = filter.matches( mockTaskWithSummaryAndId( "", "int MIN" ) );
+      NameOrIdMatcher matcher = new NameOrIdMatcher( "Int min" );
+      result = matcher.matches( mockTaskWithSummaryAndId( "", "int MIN" ) );
     } finally {
       Locale.setDefault( defaultLocale );
     }
@@ -110,8 +110,8 @@ public class NameOrIdFilter_Test {
 
   @Test
   public void testToString() throws Exception {
-    NameOrIdFilter filter = new NameOrIdFilter( "foo" );
-    assertEquals( "nameOrId(\"foo\")", filter.toString() );
+    NameOrIdMatcher matcher = new NameOrIdMatcher( "foo" );
+    assertEquals( "nameOrId(\"foo\")", matcher.toString() );
   }
 
   private static ITask mockTaskWithSummaryAndId( String id, String summary ) {
