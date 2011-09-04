@@ -12,9 +12,13 @@ package ralfstx.mylyn.bugview.internal;
 
 import static org.junit.Assert.*;
 
+import org.eclipse.mylyn.tasks.core.ITask;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
 
+@SuppressWarnings( "unchecked" )
 public class SearchQueryParser_Test {
 
   @Test( expected = NullPointerException.class )
@@ -28,18 +32,19 @@ public class SearchQueryParser_Test {
   public void testParse_withEmptyString() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
-    TaskMatcher result = parser.parse( "" );
+    Matcher<ITask> result = parser.parse( "" );
 
-    assertMatcherEquals( new AndMatcher(), result );
+    Matcher<ITask> expected = CoreMatchers.anything();
+    assertMatcherEquals( expected, result );
   }
 
   @Test
   public void testParse_withSingleString() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
-    TaskMatcher result = parser.parse( "foo" );
+    Matcher<ITask> result = parser.parse( "foo" );
 
-    AndMatcher expected = new AndMatcher( new NameOrIdMatcher( "foo" ) );
+    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrIdMatcher( "foo" ) );
     assertMatcherEquals( expected, result );
   }
 
@@ -47,10 +52,10 @@ public class SearchQueryParser_Test {
   public void testParse_withTwoStrings() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
-    TaskMatcher result = parser.parse( "foo bar" );
+    Matcher<ITask> result = parser.parse( "foo bar" );
 
-    AndMatcher expected = new AndMatcher( new NameOrIdMatcher( "foo" ),
-                                          new NameOrIdMatcher( "bar" ) );
+    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrIdMatcher( "foo" ),
+                                                  new NameOrIdMatcher( "bar" ) );
     assertMatcherEquals( expected, result );
   }
 
@@ -58,13 +63,13 @@ public class SearchQueryParser_Test {
   public void testParse_stripsWhitespace() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
-    TaskMatcher result = parser.parse( " foo\t  " );
+    Matcher<ITask> result = parser.parse( " foo\t  " );
 
-    AndMatcher expected = new AndMatcher( new NameOrIdMatcher( "foo" ) );
+    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrIdMatcher( "foo" ) );
     assertMatcherEquals( expected, result );
   }
 
-  private static void assertMatcherEquals( TaskMatcher expected, TaskMatcher actual ) {
+  private static void assertMatcherEquals( Matcher<ITask> expected, Matcher<ITask> actual ) {
     assertEquals( expected.toString(), actual.toString() );
   }
 }

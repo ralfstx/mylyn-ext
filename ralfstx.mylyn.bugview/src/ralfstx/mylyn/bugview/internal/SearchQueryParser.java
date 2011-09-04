@@ -12,23 +12,28 @@ package ralfstx.mylyn.bugview.internal;
 
 import java.util.ArrayList;
 
+import org.eclipse.mylyn.tasks.core.ITask;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matcher;
+
 
 public class SearchQueryParser {
 
-  public TaskMatcher parse( String query ) {
+  public Matcher<ITask> parse( String query ) {
     if( query == null ) {
       throw new NullPointerException( "null parameter: query" );
     }
-    ArrayList<TaskMatcher> result = new ArrayList<TaskMatcher>();
+    ArrayList<Matcher<? extends ITask>> result = new ArrayList<Matcher<? extends ITask>>();
     String[] parts = query.split( "\\s+" );
     for( String part : parts ) {
       if( part.length() > 0 ) {
         result.add( new NameOrIdMatcher( part ) );
       }
     }
-    TaskMatcher[] components = new TaskMatcher[ result.size() ];
-    result.toArray( components );
-    return new AndMatcher( components );
+    if( result.size() == 0 ) {
+      return CoreMatchers.anything();
+    }
+    return CoreMatchers.allOf( result );
   }
 
 }

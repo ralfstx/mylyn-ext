@@ -37,6 +37,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matcher;
 
 
 public class BugView extends ViewPart {
@@ -46,7 +48,7 @@ public class BugView extends ViewPart {
 
   private TableViewer viewer;
   private Text searchField;
-  private TaskMatcher searchMatcher = new AndMatcher();
+  private Matcher<ITask> searchMatcher = CoreMatchers.anything();
   private final SearchQueryParser queryParser = new SearchQueryParser();
 
   @Override

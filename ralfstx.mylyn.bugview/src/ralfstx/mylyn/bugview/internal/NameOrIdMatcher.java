@@ -13,9 +13,11 @@ package ralfstx.mylyn.bugview.internal;
 import java.util.Locale;
 
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 
 
-public class NameOrIdMatcher implements TaskMatcher {
+public class NameOrIdMatcher extends BaseMatcher<ITask> {
 
   private final String searchString;
 
@@ -23,21 +25,25 @@ public class NameOrIdMatcher implements TaskMatcher {
     this.searchString = searchString.toLowerCase( Locale.ENGLISH );
   }
 
-  public boolean matches( ITask task ) {
-    String id = task.getTaskId().toLowerCase( Locale.ENGLISH );
-    if( id.startsWith( searchString ) ) {
-      return true;
-    }
-    String summary = task.getSummary().toLowerCase( Locale.ENGLISH );
-    if( summary.contains( searchString ) ) {
-      return true;
+  public boolean matches( Object item ) {
+    if( item instanceof ITask ) {
+      ITask task = (ITask)item;
+      String id = task.getTaskId().toLowerCase( Locale.ENGLISH );
+      if( id.startsWith( searchString ) ) {
+        return true;
+      }
+      String summary = task.getSummary().toLowerCase( Locale.ENGLISH );
+      if( summary.contains( searchString ) ) {
+        return true;
+      }
     }
     return false;
   }
 
-  @Override
-  public String toString() {
-    return "nameOrId(\"" + searchString + "\")";
+  public void describeTo( Description description ) {
+    description.appendText( "nameOrId(" );
+    description.appendValue( searchString );
+    description.appendText( ")" );
   }
 
 }
