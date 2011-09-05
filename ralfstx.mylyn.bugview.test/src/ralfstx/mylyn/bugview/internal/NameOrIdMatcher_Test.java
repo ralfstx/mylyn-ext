@@ -16,6 +16,7 @@ import static org.mockito.Mockito.*;
 import java.util.Locale;
 
 import org.eclipse.mylyn.tasks.core.ITask;
+import org.hamcrest.StringDescription;
 import org.junit.Test;
 
 
@@ -109,9 +110,10 @@ public class NameOrIdMatcher_Test {
   }
 
   @Test
-  public void testToString() throws Exception {
+  public void testDescription() throws Exception {
     NameOrIdMatcher matcher = new NameOrIdMatcher( "foo" );
-    assertEquals( "nameOrId(\"foo\")", matcher.toString() );
+
+    assertEquals( "nameOrId(\"foo\")", StringDescription.toString( matcher ) );
   }
 
   private static ITask mockTaskWithSummaryAndId( String id, String summary ) {
