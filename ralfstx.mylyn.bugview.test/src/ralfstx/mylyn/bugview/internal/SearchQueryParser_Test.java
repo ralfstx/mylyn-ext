@@ -10,7 +10,7 @@
  ******************************************************************************/
 package ralfstx.mylyn.bugview.internal;
 
-import static org.junit.Assert.*;
+import static ralfstx.mylyn.bugview.test.TestUtil.*;
 
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.hamcrest.CoreMatchers;
@@ -103,7 +103,4 @@ public class SearchQueryParser_Test {
     assertMatcherEquals( expected, result );
   }
 
-  private static void assertMatcherEquals( Matcher<ITask> expected, Matcher<ITask> actual ) {
-    assertEquals( expected.toString(), actual.toString() );
-  }
 }

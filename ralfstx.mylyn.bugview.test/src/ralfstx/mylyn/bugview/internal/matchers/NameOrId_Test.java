@@ -11,15 +11,12 @@
 package ralfstx.mylyn.bugview.internal.matchers;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static ralfstx.mylyn.bugview.test.TestUtil.*;
 
 import java.util.Locale;
 
-import org.eclipse.mylyn.tasks.core.ITask;
 import org.hamcrest.StringDescription;
 import org.junit.Test;
-
-import ralfstx.mylyn.bugview.internal.matchers.NameOrId;
 
 
 public class NameOrId_Test {
@@ -118,10 +115,4 @@ public class NameOrId_Test {
     assertEquals( "nameOrId(\"foo\")", StringDescription.toString( matcher ) );
   }
 
-  private static ITask mockTaskWithSummaryAndId( String id, String summary ) {
-    ITask task = mock( ITask.class );
-    when( task.getTaskId() ).thenReturn( id );
-    when( task.getSummary() ).thenReturn( summary );
-    return task;
-  }
 }
