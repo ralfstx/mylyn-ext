@@ -17,6 +17,9 @@ import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
+import ralfstx.mylyn.bugview.TaskMatchers;
+import ralfstx.mylyn.bugview.internal.matchers.NameOrId;
+
 
 @SuppressWarnings( "unchecked" )
 public class SearchQueryParser_Test {
@@ -44,7 +47,7 @@ public class SearchQueryParser_Test {
 
     Matcher<ITask> result = parser.parse( "foo" );
 
-    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrIdMatcher( "foo" ) );
+    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrId( "foo" ) );
     assertMatcherEquals( expected, result );
   }
 
@@ -54,8 +57,8 @@ public class SearchQueryParser_Test {
 
     Matcher<ITask> result = parser.parse( "foo bar" );
 
-    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrIdMatcher( "foo" ),
-                                                  new NameOrIdMatcher( "bar" ) );
+    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrId( "foo" ),
+                                                  new NameOrId( "bar" ) );
     assertMatcherEquals( expected, result );
   }
 
@@ -65,7 +68,7 @@ public class SearchQueryParser_Test {
 
     Matcher<ITask> result = parser.parse( " foo\t  " );
 
-    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrIdMatcher( "foo" ) );
+    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrId( "foo" ) );
     assertMatcherEquals( expected, result );
   }
 
@@ -75,7 +78,7 @@ public class SearchQueryParser_Test {
 
     Matcher<ITask> result = parser.parse( ":incoming" );
 
-    Matcher<ITask> expected = CoreMatchers.allOf( SyncStateMatchers.isIncoming() );
+    Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.isIncoming() );
     assertMatcherEquals( expected, result );
   }
 
@@ -85,7 +88,7 @@ public class SearchQueryParser_Test {
 
     Matcher<ITask> result = parser.parse( ":outgoing" );
 
-    Matcher<ITask> expected = CoreMatchers.allOf( SyncStateMatchers.isOutgoing() );
+    Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.isOutgoing() );
     assertMatcherEquals( expected, result );
   }
 
@@ -95,8 +98,8 @@ public class SearchQueryParser_Test {
 
     Matcher<ITask> result = parser.parse( "foo :incoming" );
 
-    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrIdMatcher( "foo" ),
-                                                  SyncStateMatchers.isIncoming() );
+    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrId( "foo" ),
+                                                  TaskMatchers.isIncoming() );
     assertMatcherEquals( expected, result );
   }
 

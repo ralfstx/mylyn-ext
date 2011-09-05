@@ -8,19 +8,21 @@
  * Contributors:
  *    Ralf Sternberg - initial implementation and API
  ******************************************************************************/
-package ralfstx.mylyn.bugview.internal;
+package ralfstx.mylyn.bugview.internal.matchers;
 
 import java.util.Locale;
 
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.hamcrest.Description;
 
+import ralfstx.mylyn.bugview.TaskMatcher;
 
-public class NameOrIdMatcher extends TaskMatcher {
+
+public class NameOrId extends TaskMatcher {
 
   private final String searchString;
 
-  public NameOrIdMatcher( String searchString ) {
+  public NameOrId( String searchString ) {
     this.searchString = searchString.toLowerCase( Locale.ENGLISH );
   }
 

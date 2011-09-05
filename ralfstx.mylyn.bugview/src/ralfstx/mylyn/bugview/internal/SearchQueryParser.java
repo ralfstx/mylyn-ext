@@ -16,6 +16,9 @@ import org.eclipse.mylyn.tasks.core.ITask;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
 
+import ralfstx.mylyn.bugview.TaskMatchers;
+import ralfstx.mylyn.bugview.internal.matchers.NameOrId;
+
 
 public class SearchQueryParser {
 
@@ -42,12 +45,12 @@ public class SearchQueryParser {
       return null;
     }
     if( ":incoming".equals( part ) ) {
-      return SyncStateMatchers.isIncoming();
+      return TaskMatchers.isIncoming();
     }
     if( ":outgoing".equals( part ) ) {
-      return SyncStateMatchers.isOutgoing();
+      return TaskMatchers.isOutgoing();
     }
-    return new NameOrIdMatcher( part );
+    return new NameOrId( part );
   }
 
 }

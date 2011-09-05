@@ -8,42 +8,36 @@
  * Contributors:
  *    Ralf Sternberg - initial implementation and API
  ******************************************************************************/
-package ralfstx.mylyn.bugview.internal;
+package ralfstx.mylyn.bugview;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.hamcrest.Description;
+import org.junit.Test;
+
+import ralfstx.mylyn.bugview.TaskMatcher;
 
 
-public abstract class SyncStateMatchers {
+public class TaskMatcher_Test {
 
-  public static TaskMatcher isIncoming() {
-    return new TaskMatcher() {
+  @Test
+  public void matchesOnlyITask() throws Exception {
+    TaskMatcher matcher = new TaskMatcher() {
+
+      public void describeTo( Description description ) {
+        description.appendText( "TRUE" );
+      }
 
       @Override
       protected boolean matches( ITask task ) {
-        return task.getSynchronizationState().isIncoming();
+        return true;
       }
-
-      public void describeTo( Description description ) {
-        description.appendText( "INCOMING" );
-      }
-
     };
-  }
 
-  public static TaskMatcher isOutgoing() {
-    return new TaskMatcher() {
-
-      @Override
-      protected boolean matches( ITask task ) {
-        return task.getSynchronizationState().isOutgoing();
-      }
-
-      public void describeTo( Description description ) {
-        description.appendText(  "OUTGOING"  );
-      }
-
-    };
+    assertFalse( matcher.matches( new Object() ) );
+    assertTrue( matcher.matches( mock( ITask.class ) ) );
   }
 
 }

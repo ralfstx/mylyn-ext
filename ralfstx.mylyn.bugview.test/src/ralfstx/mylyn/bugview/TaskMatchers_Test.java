@@ -8,7 +8,7 @@
  * Contributors:
  *    Ralf Sternberg - initial implementation and API
  ******************************************************************************/
-package ralfstx.mylyn.bugview.internal;
+package ralfstx.mylyn.bugview;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -19,11 +19,11 @@ import org.hamcrest.StringDescription;
 import org.junit.Test;
 
 
-public class SyncStateMatchers_Test {
+public class TaskMatchers_Test {
 
   @Test
-  public void testIncomingMatches() throws Exception {
-    TaskMatcher matcher = SyncStateMatchers.isIncoming();
+  public void testIsIncomingMatches() throws Exception {
+    TaskMatcher matcher = TaskMatchers.isIncoming();
 
     assertTrue( matcher.matches( mockTaskWithSyncState( SynchronizationState.INCOMING ) ) );
     assertTrue( matcher.matches( mockTaskWithSyncState( SynchronizationState.CONFLICT ) ) );
@@ -32,8 +32,13 @@ public class SyncStateMatchers_Test {
   }
 
   @Test
+  public void testIsIncomingDescription() throws Exception {
+    assertEquals( "isIncoming", StringDescription.toString( TaskMatchers.isIncoming() ) );
+  }
+
+  @Test
   public void testOutgoingMatches() throws Exception {
-    TaskMatcher matcher = SyncStateMatchers.isOutgoing();
+    TaskMatcher matcher = TaskMatchers.isOutgoing();
 
     assertTrue( matcher.matches( mockTaskWithSyncState( SynchronizationState.OUTGOING ) ) );
     assertTrue( matcher.matches( mockTaskWithSyncState( SynchronizationState.CONFLICT ) ) );
@@ -42,9 +47,8 @@ public class SyncStateMatchers_Test {
   }
 
   @Test
-  public void testDescription() throws Exception {
-    assertEquals( "INCOMING", StringDescription.toString( SyncStateMatchers.isIncoming() ) );
-    assertEquals( "OUTGOING", StringDescription.toString( SyncStateMatchers.isOutgoing() ) );
+  public void testOutgoingDescription() throws Exception {
+    assertEquals( "isOutgoing", StringDescription.toString( TaskMatchers.isOutgoing() ) );
   }
 
   private static ITask mockTaskWithSyncState( SynchronizationState syncState ) {

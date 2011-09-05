@@ -8,21 +8,24 @@
  * Contributors:
  *    Ralf Sternberg - initial implementation and API
  ******************************************************************************/
-package ralfstx.mylyn.bugview.internal;
+package ralfstx.mylyn.bugview;
 
-import org.eclipse.mylyn.tasks.core.ITask;
-import org.hamcrest.BaseMatcher;
+import ralfstx.mylyn.bugview.internal.matchers.IsIncoming;
+import ralfstx.mylyn.bugview.internal.matchers.IsOutgoing;
 
 
-public abstract class TaskMatcher extends BaseMatcher<ITask> {
+public final class TaskMatchers {
 
-  public boolean matches( Object item ) {
-    if( item instanceof ITask ) {
-      return matches( (ITask)item );
-    }
-    return false;
+  private TaskMatchers() {
+    // prevent instantiation
   }
 
-  protected abstract boolean matches( ITask task );
+  public static TaskMatcher isIncoming() {
+    return new IsIncoming();
+  }
+
+  public static TaskMatcher isOutgoing() {
+    return new IsOutgoing();
+  }
 
 }
