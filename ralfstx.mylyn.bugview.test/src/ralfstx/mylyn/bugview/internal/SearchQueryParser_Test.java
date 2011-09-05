@@ -69,6 +69,37 @@ public class SearchQueryParser_Test {
     assertMatcherEquals( expected, result );
   }
 
+  @Test
+  public void testParse_incoming() throws Exception {
+    SearchQueryParser parser = new SearchQueryParser();
+
+    Matcher<ITask> result = parser.parse( ":incoming" );
+
+    Matcher<ITask> expected = CoreMatchers.allOf( SyncStateMatchers.isIncoming() );
+    assertMatcherEquals( expected, result );
+  }
+
+  @Test
+  public void testParse_outgoing() throws Exception {
+    SearchQueryParser parser = new SearchQueryParser();
+
+    Matcher<ITask> result = parser.parse( ":outgoing" );
+
+    Matcher<ITask> expected = CoreMatchers.allOf( SyncStateMatchers.isOutgoing() );
+    assertMatcherEquals( expected, result );
+  }
+
+  @Test
+  public void testParse_mixed() throws Exception {
+    SearchQueryParser parser = new SearchQueryParser();
+
+    Matcher<ITask> result = parser.parse( "foo :incoming" );
+
+    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrIdMatcher( "foo" ),
+                                                  SyncStateMatchers.isIncoming() );
+    assertMatcherEquals( expected, result );
+  }
+
   private static void assertMatcherEquals( Matcher<ITask> expected, Matcher<ITask> actual ) {
     assertEquals( expected.toString(), actual.toString() );
   }

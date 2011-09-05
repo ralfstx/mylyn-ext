@@ -26,14 +26,28 @@ public class SearchQueryParser {
     ArrayList<Matcher<? extends ITask>> result = new ArrayList<Matcher<? extends ITask>>();
     String[] parts = query.split( "\\s+" );
     for( String part : parts ) {
-      if( part.length() > 0 ) {
-        result.add( new NameOrIdMatcher( part ) );
+      Matcher<ITask> matcher = getMatcherForPart( part );
+      if( matcher != null ) {
+        result.add( matcher );
       }
     }
     if( result.size() == 0 ) {
       return CoreMatchers.anything();
     }
     return CoreMatchers.allOf( result );
+  }
+
+  private static Matcher<ITask> getMatcherForPart( String part ) {
+    if( part.length() == 0 ) {
+      return null;
+    }
+    if( ":incoming".equals( part ) ) {
+      return SyncStateMatchers.isIncoming();
+    }
+    if( ":outgoing".equals( part ) ) {
+      return SyncStateMatchers.isOutgoing();
+    }
+    return new NameOrIdMatcher( part );
   }
 
 }
