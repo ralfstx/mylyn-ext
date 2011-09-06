@@ -22,7 +22,7 @@ import org.junit.Test;
 public class NameOrId_Test {
 
   @Test
-  public void testMatches_withEmptyString() throws Exception {
+  public void matches_withEmptyString() throws Exception {
     NameOrId matcher = new NameOrId( "" );
 
     assertTrue( matcher.matches( mockTaskWithSummaryAndId( "", "" ) ) );
@@ -30,7 +30,7 @@ public class NameOrId_Test {
   }
 
   @Test
-  public void testMatches_withExactSummary() throws Exception {
+  public void matches_withExactSummary() throws Exception {
     NameOrId matcher = new NameOrId( "foo" );
 
     assertFalse( matcher.matches( mockTaskWithSummaryAndId( "23", "bar" ) ) );
@@ -38,7 +38,7 @@ public class NameOrId_Test {
   }
 
   @Test
-  public void testMatches_withSummarySubString() throws Exception {
+  public void matches_withSummarySubString() throws Exception {
     NameOrId matcher = new NameOrId( "bar" );
 
     assertFalse( matcher.matches( mockTaskWithSummaryAndId( "23", "foo" ) ) );
@@ -46,7 +46,7 @@ public class NameOrId_Test {
   }
 
   @Test
-  public void testMatches_withExactId() throws Exception {
+  public void matches_withExactId() throws Exception {
     NameOrId matcher = new NameOrId( "23" );
 
     assertFalse( matcher.matches( mockTaskWithSummaryAndId( "", "" ) ) );
@@ -55,7 +55,7 @@ public class NameOrId_Test {
   }
 
   @Test
-  public void testMatches_withIdPrefix() throws Exception {
+  public void matches_withIdPrefix() throws Exception {
     NameOrId matcher = new NameOrId( "23" );
 
     assertFalse( matcher.matches( mockTaskWithSummaryAndId( "123", "" ) ) );
@@ -63,21 +63,21 @@ public class NameOrId_Test {
   }
 
   @Test
-  public void testMatches_caseInsensitiveId() throws Exception {
+  public void matches_caseInsensitiveId() throws Exception {
     NameOrId matcher = new NameOrId( "23aB" );
 
     assertTrue( matcher.matches( mockTaskWithSummaryAndId( "23Ab", "" ) ) );
   }
 
   @Test
-  public void testMatches_caseInsensitiveSummary() throws Exception {
+  public void matches_caseInsensitiveSummary() throws Exception {
     NameOrId matcher = new NameOrId( "fooBAR" );
 
     assertTrue( matcher.matches( mockTaskWithSummaryAndId( "", "Foobar" ) ) );
   }
 
   @Test
-  public void testMatches_caseInsensitiveId_ignoresDefaultLocale() throws Exception {
+  public void matches_caseInsensitiveId_ignoresDefaultLocale() throws Exception {
     Locale defaultLocale = Locale.getDefault();
     boolean result;
 
@@ -93,7 +93,7 @@ public class NameOrId_Test {
   }
 
   @Test
-  public void testMatches_caseInsensitiveSummary_ignoresDefaultLocale() throws Exception {
+  public void matches_caseInsensitiveSummary_ignoresDefaultLocale() throws Exception {
     Locale defaultLocale = Locale.getDefault();
     boolean result;
 
@@ -109,7 +109,7 @@ public class NameOrId_Test {
   }
 
   @Test
-  public void testDescription() throws Exception {
+  public void description() throws Exception {
     NameOrId matcher = new NameOrId( "foo" );
 
     assertEquals( "nameOrId(\"foo\")", StringDescription.toString( matcher ) );

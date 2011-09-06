@@ -25,14 +25,14 @@ import ralfstx.mylyn.bugview.internal.matchers.NameOrId;
 public class SearchQueryParser_Test {
 
   @Test( expected = NullPointerException.class )
-  public void testParse_withNull() throws Exception {
+  public void parse_withNull() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
     parser.parse( null );
   }
 
   @Test
-  public void testParse_withEmptyString() throws Exception {
+  public void parse_withEmptyString() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
     Matcher<ITask> result = parser.parse( "" );
@@ -42,7 +42,7 @@ public class SearchQueryParser_Test {
   }
 
   @Test
-  public void testParse_withSingleString() throws Exception {
+  public void parse_withSingleString() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
     Matcher<ITask> result = parser.parse( "foo" );
@@ -52,7 +52,7 @@ public class SearchQueryParser_Test {
   }
 
   @Test
-  public void testParse_withTwoStrings() throws Exception {
+  public void parse_withTwoStrings() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
     Matcher<ITask> result = parser.parse( "foo bar" );
@@ -63,7 +63,7 @@ public class SearchQueryParser_Test {
   }
 
   @Test
-  public void testParse_stripsWhitespace() throws Exception {
+  public void parse_stripsWhitespace() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
     Matcher<ITask> result = parser.parse( " foo\t  " );
@@ -73,7 +73,7 @@ public class SearchQueryParser_Test {
   }
 
   @Test
-  public void testParse_incoming() throws Exception {
+  public void parse_incoming() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
     Matcher<ITask> result = parser.parse( ":incoming" );
@@ -83,7 +83,7 @@ public class SearchQueryParser_Test {
   }
 
   @Test
-  public void testParse_outgoing() throws Exception {
+  public void parse_outgoing() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
     Matcher<ITask> result = parser.parse( ":outgoing" );
@@ -93,7 +93,7 @@ public class SearchQueryParser_Test {
   }
 
   @Test
-  public void testParse_mixed() throws Exception {
+  public void parse_mixed() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
     Matcher<ITask> result = parser.parse( "foo :incoming" );
