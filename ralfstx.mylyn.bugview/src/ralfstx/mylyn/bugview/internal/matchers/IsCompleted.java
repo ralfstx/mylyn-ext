@@ -8,29 +8,22 @@
  * Contributors:
  *    Ralf Sternberg - initial implementation and API
  ******************************************************************************/
-package ralfstx.mylyn.bugview;
+package ralfstx.mylyn.bugview.internal.matchers;
 
-import ralfstx.mylyn.bugview.internal.matchers.IsCompleted;
-import ralfstx.mylyn.bugview.internal.matchers.IsIncoming;
-import ralfstx.mylyn.bugview.internal.matchers.IsOutgoing;
+import org.eclipse.mylyn.tasks.core.ITask;
+import org.hamcrest.Description;
 
+import ralfstx.mylyn.bugview.TaskMatcher;
 
-public final class TaskMatchers {
+public class IsCompleted extends TaskMatcher {
 
-  private TaskMatchers() {
-    // prevent instantiation
+  @Override
+  protected boolean matches( ITask task ) {
+    return task.isCompleted();
   }
 
-  public static TaskMatcher isIncoming() {
-    return new IsIncoming();
-  }
-
-  public static TaskMatcher isOutgoing() {
-    return new IsOutgoing();
-  }
-
-  public static TaskMatcher isCompleted() {
-    return new IsCompleted();
+  public void describeTo( Description description ) {
+    description.appendText( "isCompleted" );
   }
 
 }

@@ -8,32 +8,30 @@
  * Contributors:
  *    Ralf Sternberg - initial implementation and API
  ******************************************************************************/
-package ralfstx.mylyn.bugview;
+package ralfstx.mylyn.bugview.internal.matchers;
 
+import static org.junit.Assert.*;
 import static ralfstx.mylyn.bugview.test.TestUtil.*;
 
+import org.hamcrest.StringDescription;
 import org.junit.Test;
 
-import ralfstx.mylyn.bugview.internal.matchers.IsCompleted;
-import ralfstx.mylyn.bugview.internal.matchers.IsIncoming;
-import ralfstx.mylyn.bugview.internal.matchers.IsOutgoing;
+import ralfstx.mylyn.bugview.TaskMatcher;
 
 
-public class TaskMatchers_Test {
+public class IsCompleted_Test {
 
   @Test
-  public void isIncoming() throws Exception {
-    assertMatcherEquals( new IsIncoming(), TaskMatchers.isIncoming() );
+  public void matches() throws Exception {
+    TaskMatcher matcher = new IsCompleted();
+
+    assertTrue( matcher.matches( mockCompletedTask() ) );
+    assertFalse( matcher.matches( mockUncompletedTask() ) );
   }
 
   @Test
-  public void isOutgoing() throws Exception {
-    assertMatcherEquals( new IsOutgoing(), TaskMatchers.isOutgoing() );
-  }
-
-  @Test
-  public void isCompleted() throws Exception {
-    assertMatcherEquals( new IsCompleted(), TaskMatchers.isCompleted() );
+  public void description() throws Exception {
+    assertEquals( "isCompleted", StringDescription.toString( new IsCompleted() ) );
   }
 
 }

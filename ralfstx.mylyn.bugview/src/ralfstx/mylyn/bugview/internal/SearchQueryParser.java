@@ -50,6 +50,9 @@ public class SearchQueryParser {
     if( ":outgoing".equals( part ) ) {
       return TaskMatchers.isOutgoing();
     }
+    if( ":open".equals( part ) ) {
+      return CoreMatchers.not( TaskMatchers.isCompleted() );
+    }
     return new NameOrId( part );
   }
 

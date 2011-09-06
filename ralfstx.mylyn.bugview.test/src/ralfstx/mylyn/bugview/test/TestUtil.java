@@ -37,6 +37,18 @@ public final class TestUtil {
     return task;
   }
 
+  public static ITask mockCompletedTask() {
+    ITask task = mock( ITask.class );
+    when( Boolean.valueOf( task.isCompleted() ) ).thenReturn( Boolean.TRUE );
+    return task;
+  }
+
+  public static ITask mockUncompletedTask() {
+    ITask task = mock( ITask.class );
+    when( Boolean.valueOf( task.isCompleted() ) ).thenReturn( Boolean.FALSE );
+    return task;
+  }
+
   public static void assertMatcherEquals( Matcher<ITask> expected, Matcher<ITask> actual ) {
     assertEquals( expected.toString(), actual.toString() );
   }

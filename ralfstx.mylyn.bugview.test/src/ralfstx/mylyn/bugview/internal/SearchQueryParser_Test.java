@@ -103,4 +103,14 @@ public class SearchQueryParser_Test {
     assertMatcherEquals( expected, result );
   }
 
+  @Test
+  public void parse_open() throws Exception {
+    SearchQueryParser parser = new SearchQueryParser();
+
+    Matcher<ITask> result = parser.parse( ":open" );
+
+    Matcher<ITask> expected = CoreMatchers.allOf( CoreMatchers.not( TaskMatchers.isCompleted() ) );
+    assertMatcherEquals( expected, result );
+  }
+
 }
