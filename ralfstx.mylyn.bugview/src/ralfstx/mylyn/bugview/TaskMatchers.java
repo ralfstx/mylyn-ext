@@ -11,6 +11,7 @@
 package ralfstx.mylyn.bugview;
 
 import ralfstx.mylyn.bugview.internal.matchers.IsCompleted;
+import ralfstx.mylyn.bugview.internal.matchers.IsEnhancement;
 import ralfstx.mylyn.bugview.internal.matchers.IsIncoming;
 import ralfstx.mylyn.bugview.internal.matchers.IsOutgoing;
 
@@ -31,6 +32,10 @@ public final class TaskMatchers {
 
   public static TaskMatcher isCompleted() {
     return new IsCompleted();
+  }
+
+  public static TaskMatcher isEnhancement() {
+    return new IsEnhancement();
   }
 
 }

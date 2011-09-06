@@ -53,6 +53,12 @@ public class SearchQueryParser {
     if( ":open".equals( part ) ) {
       return CoreMatchers.not( TaskMatchers.isCompleted() );
     }
+    if( ":defect".equals( part ) ) {
+      return CoreMatchers.not( TaskMatchers.isEnhancement() );
+    }
+    if( ":enhancement".equals( part ) ) {
+      return TaskMatchers.isEnhancement();
+    }
     return new NameOrId( part );
   }
 

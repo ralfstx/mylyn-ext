@@ -49,6 +49,12 @@ public final class TestUtil {
     return task;
   }
 
+  public static ITask mockTaskWithSeverity( String severity ) {
+    ITask task = mock( ITask.class );
+    when( task.getAttribute( "bug_severity" ) ).thenReturn( severity );
+    return task;
+  }
+
   public static void assertMatcherEquals( Matcher<ITask> expected, Matcher<ITask> actual ) {
     assertEquals( expected.toString(), actual.toString() );
   }

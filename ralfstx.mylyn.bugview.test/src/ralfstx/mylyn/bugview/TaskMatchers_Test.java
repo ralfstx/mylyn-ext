@@ -15,6 +15,7 @@ import static ralfstx.mylyn.bugview.test.TestUtil.*;
 import org.junit.Test;
 
 import ralfstx.mylyn.bugview.internal.matchers.IsCompleted;
+import ralfstx.mylyn.bugview.internal.matchers.IsEnhancement;
 import ralfstx.mylyn.bugview.internal.matchers.IsIncoming;
 import ralfstx.mylyn.bugview.internal.matchers.IsOutgoing;
 
@@ -34,6 +35,11 @@ public class TaskMatchers_Test {
   @Test
   public void isCompleted() throws Exception {
     assertMatcherEquals( new IsCompleted(), TaskMatchers.isCompleted() );
+  }
+
+  @Test
+  public void isEnhancement() throws Exception {
+    assertMatcherEquals( new IsEnhancement(), TaskMatchers.isEnhancement() );
   }
 
 }

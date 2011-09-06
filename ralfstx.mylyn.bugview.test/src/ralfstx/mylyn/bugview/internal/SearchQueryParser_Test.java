@@ -113,4 +113,24 @@ public class SearchQueryParser_Test {
     assertMatcherEquals( expected, result );
   }
 
+  @Test
+  public void parse_defect() throws Exception {
+    SearchQueryParser parser = new SearchQueryParser();
+
+    Matcher<ITask> result = parser.parse( ":defect" );
+
+    Matcher<ITask> expected = CoreMatchers.allOf( CoreMatchers.not( TaskMatchers.isEnhancement() ) );
+    assertMatcherEquals( expected, result );
+  }
+
+  @Test
+  public void parse_enhancement() throws Exception {
+    SearchQueryParser parser = new SearchQueryParser();
+
+    Matcher<ITask> result = parser.parse( ":enhancement" );
+
+    Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.isEnhancement() );
+    assertMatcherEquals( expected, result );
+  }
+
 }
