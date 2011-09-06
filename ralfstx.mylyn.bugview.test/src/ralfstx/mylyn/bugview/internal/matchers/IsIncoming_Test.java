@@ -18,14 +18,13 @@ import org.hamcrest.StringDescription;
 import org.junit.Test;
 
 import ralfstx.mylyn.bugview.TaskMatcher;
-import ralfstx.mylyn.bugview.TaskMatchers;
 
 
 public class IsIncoming_Test {
 
   @Test
   public void matches() throws Exception {
-    TaskMatcher matcher = TaskMatchers.isIncoming();
+    TaskMatcher matcher = new IsIncoming();
 
     assertTrue( matcher.matches( mockTaskWithSyncState( SynchronizationState.INCOMING ) ) );
     assertTrue( matcher.matches( mockTaskWithSyncState( SynchronizationState.CONFLICT ) ) );
@@ -35,7 +34,7 @@ public class IsIncoming_Test {
 
   @Test
   public void description() throws Exception {
-    assertEquals( "isIncoming", StringDescription.toString( TaskMatchers.isIncoming() ) );
+    assertEquals( "isIncoming", StringDescription.toString( new IsIncoming() ) );
   }
 
 }
