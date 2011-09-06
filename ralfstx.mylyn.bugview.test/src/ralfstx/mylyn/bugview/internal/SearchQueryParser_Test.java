@@ -93,17 +93,6 @@ public class SearchQueryParser_Test {
   }
 
   @Test
-  public void parse_mixed() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
-    Matcher<ITask> result = parser.parse( "foo :incoming" );
-
-    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrId( "foo" ),
-                                                  TaskMatchers.isIncoming() );
-    assertMatcherEquals( expected, result );
-  }
-
-  @Test
   public void parse_open() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 
@@ -130,6 +119,37 @@ public class SearchQueryParser_Test {
     Matcher<ITask> result = parser.parse( ":enhancement" );
 
     Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.isEnhancement() );
+    assertMatcherEquals( expected, result );
+  }
+
+  @Test
+  public void parse_product() throws Exception {
+    SearchQueryParser parser = new SearchQueryParser();
+
+    Matcher<ITask> result = parser.parse( "product:foo" );
+
+    Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.hasProduct( "foo" ) );
+    assertMatcherEquals( expected, result );
+  }
+
+  @Test
+  public void parse_productWithoutName() throws Exception {
+    SearchQueryParser parser = new SearchQueryParser();
+
+    Matcher<ITask> result = parser.parse( "product:" );
+
+    Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.hasProduct( "" ) );
+    assertMatcherEquals( expected, result );
+  }
+
+  @Test
+  public void parse_mixed() throws Exception {
+    SearchQueryParser parser = new SearchQueryParser();
+
+    Matcher<ITask> result = parser.parse( "foo :incoming" );
+
+    Matcher<ITask> expected = CoreMatchers.allOf( new NameOrId( "foo" ),
+                                                  TaskMatchers.isIncoming() );
     assertMatcherEquals( expected, result );
   }
 

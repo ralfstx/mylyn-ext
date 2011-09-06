@@ -59,6 +59,9 @@ public class SearchQueryParser {
     if( ":enhancement".equals( part ) ) {
       return TaskMatchers.isEnhancement();
     }
+    if( part.startsWith( "product:" ) ) {
+      return TaskMatchers.hasProduct( part.substring( "product:".length() ) );
+    }
     return new NameOrId( part );
   }
 

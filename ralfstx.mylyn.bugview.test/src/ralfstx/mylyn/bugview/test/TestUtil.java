@@ -55,6 +55,12 @@ public final class TestUtil {
     return task;
   }
 
+  public static ITask mockTaskWithProduct( String name ) {
+    ITask task = mock( ITask.class );
+    when( task.getAttribute( "product" ) ).thenReturn( name );
+    return task;
+  }
+
   public static void assertMatcherEquals( Matcher<ITask> expected, Matcher<ITask> actual ) {
     assertEquals( expected.toString(), actual.toString() );
   }
