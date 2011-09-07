@@ -128,7 +128,7 @@ public class SearchQueryParser_Test {
 
     Matcher<ITask> result = parser.parse( "product:foo" );
 
-    Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.hasProduct( "foo" ) );
+    Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.productMatches( "foo" ) );
     assertMatcherEquals( expected, result );
   }
 
@@ -138,7 +138,7 @@ public class SearchQueryParser_Test {
 
     Matcher<ITask> result = parser.parse( "product:" );
 
-    Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.hasProduct( "" ) );
+    Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.productMatches( "" ) );
     assertMatcherEquals( expected, result );
   }
 

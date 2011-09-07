@@ -10,7 +10,7 @@
  ******************************************************************************/
 package ralfstx.mylyn.bugview;
 
-import ralfstx.mylyn.bugview.internal.matchers.HasProduct;
+import ralfstx.mylyn.bugview.internal.matchers.ProductMatches;
 import ralfstx.mylyn.bugview.internal.matchers.IsCompleted;
 import ralfstx.mylyn.bugview.internal.matchers.IsEnhancement;
 import ralfstx.mylyn.bugview.internal.matchers.IsIncoming;
@@ -39,8 +39,8 @@ public final class TaskMatchers {
     return new IsEnhancement();
   }
 
-  public static TaskMatcher hasProduct( String name ) {
-    return new HasProduct( name );
+  public static TaskMatcher productMatches( String name ) {
+    return new ProductMatches( name );
   }
 
 }

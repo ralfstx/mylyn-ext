@@ -18,11 +18,11 @@ import org.hamcrest.Description;
 import ralfstx.mylyn.bugview.TaskMatcher;
 
 
-public class HasProduct extends TaskMatcher {
+public class ProductMatches extends TaskMatcher {
 
   private final String searchString;
 
-  public HasProduct( String searchString ) {
+  public ProductMatches( String searchString ) {
     this.searchString = searchString.toLowerCase( Locale.ENGLISH );
   }
 
@@ -39,7 +39,7 @@ public class HasProduct extends TaskMatcher {
   }
 
   public void describeTo( Description description ) {
-    description.appendText( "hasProduct(" );
+    description.appendText( "product(" );
     description.appendValue( searchString );
     description.appendText( ")" );
   }

@@ -19,11 +19,11 @@ import org.hamcrest.StringDescription;
 import org.junit.Test;
 
 
-public class HasProduct_Test {
+public class ProductMatches_Test {
 
   @Test
   public void matches_onlyExactName() throws Exception {
-    HasProduct matcher = new HasProduct( "foo" );
+    ProductMatches matcher = new ProductMatches( "foo" );
 
     assertTrue( matcher.matches( mockTaskWithProduct( "foo" ) ) );
     assertFalse( matcher.matches( mockTaskWithProduct( "bar" ) ) );
@@ -33,7 +33,7 @@ public class HasProduct_Test {
 
   @Test
   public void matches_withoutName() throws Exception {
-    HasProduct matcher = new HasProduct( "" );
+    ProductMatches matcher = new ProductMatches( "" );
 
     assertTrue( matcher.matches( mockTaskWithProduct( "" ) ) );
     assertTrue( matcher.matches( mockTaskWithProduct( null ) ) );
@@ -42,14 +42,14 @@ public class HasProduct_Test {
 
   @Test
   public void matches_whenProductIsNull() throws Exception {
-    HasProduct matcher = new HasProduct( "foo" );
+    ProductMatches matcher = new ProductMatches( "foo" );
 
     assertFalse( matcher.matches( mockTaskWithProduct( null ) ) );
   }
 
   @Test
   public void matches_caseInsensitive() throws Exception {
-    HasProduct matcher = new HasProduct( "Foo" );
+    ProductMatches matcher = new ProductMatches( "Foo" );
 
     assertTrue( matcher.matches( mockTaskWithProduct( "foO" ) ) );
   }
@@ -61,7 +61,7 @@ public class HasProduct_Test {
 
     try {
       Locale.setDefault( new Locale( "tr" ) );
-      HasProduct matcher = new HasProduct( "iI" );
+      ProductMatches matcher = new ProductMatches( "iI" );
       result = matcher.matches( mockTaskWithProduct( "Ii" ) );
     } finally {
       Locale.setDefault( defaultLocale );
@@ -72,9 +72,8 @@ public class HasProduct_Test {
 
   @Test
   public void description() throws Exception {
-    HasProduct matcher = new HasProduct( "foo" );
-
-    assertEquals( "hasProduct(\"foo\")", StringDescription.toString( matcher ) );
+    assertEquals( "product(\"\")", StringDescription.toString( new ProductMatches( "" ) ) );
+    assertEquals( "product(\"foo\")", StringDescription.toString( new ProductMatches( "foo" ) ) );
   }
 
 }
