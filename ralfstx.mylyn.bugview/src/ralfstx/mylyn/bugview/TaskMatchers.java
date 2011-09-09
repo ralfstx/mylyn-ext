@@ -10,11 +10,12 @@
  ******************************************************************************/
 package ralfstx.mylyn.bugview;
 
-import ralfstx.mylyn.bugview.internal.matchers.ProductMatches;
 import ralfstx.mylyn.bugview.internal.matchers.IsCompleted;
 import ralfstx.mylyn.bugview.internal.matchers.IsEnhancement;
 import ralfstx.mylyn.bugview.internal.matchers.IsIncoming;
 import ralfstx.mylyn.bugview.internal.matchers.IsOutgoing;
+import ralfstx.mylyn.bugview.internal.matchers.OwnerMatches;
+import ralfstx.mylyn.bugview.internal.matchers.ProductMatches;
 
 
 public final class TaskMatchers {
@@ -41,6 +42,10 @@ public final class TaskMatchers {
 
   public static TaskMatcher productMatches( String name ) {
     return new ProductMatches( name );
+  }
+
+  public static TaskMatcher ownerMatches( String name ) {
+    return new OwnerMatches( name );
   }
 
 }

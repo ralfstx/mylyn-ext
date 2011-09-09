@@ -62,6 +62,9 @@ public class SearchQueryParser {
     if( part.startsWith( "product:" ) ) {
       return TaskMatchers.productMatches( part.substring( "product:".length() ) );
     }
+    if( part.startsWith( "assigned:" ) ) {
+      return TaskMatchers.ownerMatches( part.substring( "assigned:".length() ) );
+    }
     return new NameOrId( part );
   }
 

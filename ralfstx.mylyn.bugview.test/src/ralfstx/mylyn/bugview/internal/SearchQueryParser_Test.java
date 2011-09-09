@@ -143,6 +143,16 @@ public class SearchQueryParser_Test {
   }
 
   @Test
+  public void parse_owner() throws Exception {
+    SearchQueryParser parser = new SearchQueryParser();
+
+    Matcher<ITask> result = parser.parse( "assigned:foo" );
+
+    Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.ownerMatches( "foo" ) );
+    assertMatcherEquals( expected, result );
+  }
+
+  @Test
   public void parse_mixed() throws Exception {
     SearchQueryParser parser = new SearchQueryParser();
 

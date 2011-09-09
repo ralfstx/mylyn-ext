@@ -18,6 +18,7 @@ import ralfstx.mylyn.bugview.internal.matchers.IsCompleted;
 import ralfstx.mylyn.bugview.internal.matchers.IsEnhancement;
 import ralfstx.mylyn.bugview.internal.matchers.IsIncoming;
 import ralfstx.mylyn.bugview.internal.matchers.IsOutgoing;
+import ralfstx.mylyn.bugview.internal.matchers.OwnerMatches;
 import ralfstx.mylyn.bugview.internal.matchers.ProductMatches;
 
 
@@ -46,6 +47,11 @@ public class TaskMatchers_Test {
   @Test
   public void productMatches() throws Exception {
     assertMatcherEquals( new ProductMatches( "foo" ), TaskMatchers.productMatches( "foo" ) );
+  }
+
+  @Test
+  public void ownerMatches() throws Exception {
+    assertMatcherEquals( new OwnerMatches( "foo" ), TaskMatchers.ownerMatches( "foo" ) );
   }
 
 }
