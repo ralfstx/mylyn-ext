@@ -40,6 +40,9 @@ import org.eclipse.ui.part.ViewPart;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
 
+import ralfstx.mylyn.bugview.internal.matchers.IsIncoming;
+import ralfstx.mylyn.bugview.internal.matchers.IsOutgoing;
+
 
 public class BugView extends ViewPart {
 
@@ -48,12 +51,14 @@ public class BugView extends ViewPart {
 
   private TableViewer viewer;
   private Text searchField;
+  private Matcher<ITask> toolbarMatcher = CoreMatchers.anything();
   private Matcher<ITask> searchMatcher = CoreMatchers.anything();
   private final SearchQueryParser queryParser = new SearchQueryParser();
 
   @Override
   public void createPartControl( Composite parent ) {
     parent.setLayout( createMainLayout() );
+    createToolBarArea( parent );
     createSearchTextField( parent );
     createTableViewer( parent );
     makeActions();
@@ -65,6 +70,20 @@ public class BugView extends ViewPart {
     viewer.getControl().setFocus();
   }
 
+  private void createToolBarArea( Composite parent ) {
+    final QuickFilterArea filterArea = new QuickFilterArea( parent, SWT.NONE );
+    filterArea.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
+    QuickFilterContribution incoming = new QuickFilterContribution( "in", null, new IsIncoming() );
+    QuickFilterContribution outgoing = new QuickFilterContribution( "out", null, new IsOutgoing() );
+    filterArea.createToolBar( incoming, outgoing );
+    filterArea.setMatcherChangedListener( new Runnable() {
+      public void run() {
+        toolbarMatcher = filterArea.getMatcher();
+        refreshFilter();
+      }
+    } );
+  }
+
   private void createSearchTextField( Composite parent ) {
     searchField = new Text( parent, SWT.SEARCH | SWT.CANCEL | SWT.ICON_SEARCH | SWT.ICON_CANCEL );
     searchField.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
@@ -74,10 +93,14 @@ public class BugView extends ViewPart {
       public void widgetDefaultSelected( SelectionEvent e ) {
         String query = searchField.getText().trim();
         searchMatcher = queryParser.parse( query );
-        viewer.refresh( false );
-        updateStatusBar();
+        refreshFilter();
       }
     } );
+  }
+
+  private void refreshFilter() {
+    viewer.refresh( false );
+    updateStatusBar();
   }
 
   private void createTableViewer( Composite parent ) {
@@ -192,7 +215,7 @@ public class BugView extends ViewPart {
     public boolean select( Viewer viewer, Object parentElement, Object element ) {
       if( element instanceof ITask ) {
         ITask task = (ITask)element;
-        return searchMatcher.matches( task );
+        return toolbarMatcher.matches( task ) && searchMatcher.matches( task );
       }
       return false;
     }
