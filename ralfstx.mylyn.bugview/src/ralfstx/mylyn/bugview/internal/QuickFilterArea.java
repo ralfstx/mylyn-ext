@@ -37,6 +37,11 @@ public class QuickFilterArea extends Composite {
     matchers = new HashSet<Matcher<? extends ITask>>();
     RowLayout layout = new RowLayout( SWT.HORIZONTAL );
     layout.fill = true;
+    layout.marginLeft = 2;
+    layout.marginRight = 2;
+    layout.marginTop = 2;
+    layout.marginBottom = 2;
+    layout.spacing = 2;
     super.setLayout( layout );
   }
 
@@ -62,7 +67,8 @@ public class QuickFilterArea extends Composite {
 
   private void addToolBarItem( ToolBar parent, QuickFilterContribution contribution ) {
     final ToolItem item = new ToolItem( parent, SWT.CHECK );
-    item.setText( contribution.text );
+    item.setImage( contribution.image.createImage() );
+    item.setToolTipText( contribution.text );
     final Matcher<ITask> matcher = contribution.matcher;
     item.addSelectionListener( new SelectionAdapter() {
       @Override

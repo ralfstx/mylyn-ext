@@ -73,8 +73,12 @@ public class BugView extends ViewPart {
   private void createToolBarArea( Composite parent ) {
     final QuickFilterArea filterArea = new QuickFilterArea( parent, SWT.NONE );
     filterArea.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
-    QuickFilterContribution incoming = new QuickFilterContribution( "in", null, new IsIncoming() );
-    QuickFilterContribution outgoing = new QuickFilterContribution( "out", null, new IsOutgoing() );
+    ImageDescriptor incomingImage = Activator.getImageDescriptor( "/icons/incoming.png" );
+    QuickFilterContribution incoming =
+        new QuickFilterContribution( "show only incoming", incomingImage, new IsIncoming() );
+    ImageDescriptor outgoingImage = Activator.getImageDescriptor( "/icons/outgoing.png" );
+    QuickFilterContribution outgoing =
+        new QuickFilterContribution( "show only outgoing", outgoingImage, new IsOutgoing() );
     filterArea.createToolBar( incoming, outgoing );
     filterArea.setMatcherChangedListener( new Runnable() {
       public void run() {
@@ -183,7 +187,7 @@ public class BugView extends ViewPart {
     GridLayout mainLayout = new GridLayout();
     mainLayout.marginWidth = 0;
     mainLayout.marginHeight = 0;
-    mainLayout.verticalSpacing = 2;
+    mainLayout.verticalSpacing = 0;
     return mainLayout;
   }
 
