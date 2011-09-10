@@ -40,8 +40,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
 
-import ralfstx.mylyn.bugview.internal.matchers.IsIncoming;
-import ralfstx.mylyn.bugview.internal.matchers.IsOutgoing;
+import ralfstx.mylyn.bugview.TaskMatchers;
 
 
 public class BugView extends ViewPart {
@@ -58,7 +57,7 @@ public class BugView extends ViewPart {
   @Override
   public void createPartControl( Composite parent ) {
     parent.setLayout( createMainLayout() );
-    createToolBarArea( parent );
+    createQuickFilterArea( parent );
     createSearchTextField( parent );
     createTableViewer( parent );
     makeActions();
@@ -70,22 +69,57 @@ public class BugView extends ViewPart {
     viewer.getControl().setFocus();
   }
 
-  private void createToolBarArea( Composite parent ) {
+  private void createQuickFilterArea( Composite parent ) {
     final QuickFilterArea filterArea = new QuickFilterArea( parent, SWT.NONE );
     filterArea.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
-    ImageDescriptor incomingImage = Activator.getImageDescriptor( "/icons/incoming.png" );
-    QuickFilterContribution incoming =
-        new QuickFilterContribution( "show only incoming", incomingImage, new IsIncoming() );
-    ImageDescriptor outgoingImage = Activator.getImageDescriptor( "/icons/outgoing.png" );
-    QuickFilterContribution outgoing =
-        new QuickFilterContribution( "show only outgoing", outgoingImage, new IsOutgoing() );
-    filterArea.createToolBar( incoming, outgoing );
+    addQuickFilterContributions( filterArea );
     filterArea.setMatcherChangedListener( new Runnable() {
       public void run() {
         toolbarMatcher = filterArea.getMatcher();
         refreshFilter();
       }
     } );
+  }
+
+  private static void addQuickFilterContributions( final QuickFilterArea filterArea ) {
+    QuickFilterContribution showIncoming = createIncomingContribution();
+    QuickFilterContribution showOutgoing = createOutgoingContribution();
+    filterArea.createToolBar( showIncoming, showOutgoing );
+    QuickFilterContribution showEnhancements = createEnhancementsContribution();
+    QuickFilterContribution showDefects = createDefectsContribution();
+    filterArea.createToolBar( showEnhancements, showDefects );
+    QuickFilterContribution hideCompleted = createHideCompletedContribution();
+    filterArea.createToolBar( hideCompleted );
+  }
+
+  private static QuickFilterContribution createIncomingContribution() {
+    return new QuickFilterContribution( "show only incoming",
+                                        Activator.getImageDescriptor( "/icons/incoming.png" ),
+                                        TaskMatchers.isIncoming() );
+  }
+
+  private static QuickFilterContribution createOutgoingContribution() {
+    return new QuickFilterContribution( "show only outgoing",
+                                        Activator.getImageDescriptor( "/icons/outgoing.png" ),
+                                        TaskMatchers.isOutgoing() );
+  }
+
+  private static QuickFilterContribution createEnhancementsContribution() {
+    return new QuickFilterContribution( "show only enhancements",
+                                        Activator.getImageDescriptor( "/icons/enhancement.png" ),
+                                        TaskMatchers.isEnhancement() );
+  }
+
+  private static QuickFilterContribution createDefectsContribution() {
+    return new QuickFilterContribution( "show only defects",
+                                        Activator.getImageDescriptor( "/icons/defect.png" ),
+                                        CoreMatchers.not( TaskMatchers.isEnhancement() ) );
+  }
+
+  private static QuickFilterContribution createHideCompletedContribution() {
+    return new QuickFilterContribution( "hide completed",
+                                        Activator.getImageDescriptor( "/icons/hidecompleted.png" ),
+                                        CoreMatchers.not( TaskMatchers.isCompleted() ) );
   }
 
   private void createSearchTextField( Composite parent ) {
