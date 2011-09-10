@@ -19,6 +19,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -74,6 +75,7 @@ public class QuickFilterArea extends Composite {
       @Override
       public void widgetSelected( SelectionEvent e ) {
         if( item.getSelection() ) {
+          deselectSiblings( item );
           matchers.add( matcher );
         } else {
           matchers.remove( matcher );
@@ -87,6 +89,16 @@ public class QuickFilterArea extends Composite {
     aggregatedMatcher = CoreMatchers.allOf( matchers );
     if( matcherChangedListener != null ) {
       matcherChangedListener.run();
+    }
+  }
+
+  private static void deselectSiblings( ToolItem item ) {
+    ToolItem[] siblings = item.getParent().getItems();
+    for( ToolItem sibling : siblings ) {
+      if( sibling != item ) {
+        sibling.setSelection( false );
+        sibling.notifyListeners( SWT.Selection, new Event() );
+      }
     }
   }
 
