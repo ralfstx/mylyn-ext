@@ -14,6 +14,7 @@ import static ralfstx.mylyn.bugview.test.TestUtil.*;
 
 import org.junit.Test;
 
+import ralfstx.mylyn.bugview.internal.matchers.ContainsHashTag;
 import ralfstx.mylyn.bugview.internal.matchers.IsCompleted;
 import ralfstx.mylyn.bugview.internal.matchers.IsEnhancement;
 import ralfstx.mylyn.bugview.internal.matchers.IsIncoming;
@@ -52,6 +53,11 @@ public class TaskMatchers_Test {
   @Test
   public void ownerMatches() throws Exception {
     assertMatcherEquals( new OwnerMatches( "foo" ), TaskMatchers.ownerMatches( "foo" ) );
+  }
+
+  @Test
+  public void containsHashTag() throws Exception {
+    assertMatcherEquals( new ContainsHashTag( "foo" ), TaskMatchers.containsHashTag( "foo" ) );
   }
 
 }

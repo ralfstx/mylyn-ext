@@ -65,6 +65,9 @@ public class SearchQueryParser {
     if( part.startsWith( "assigned:" ) ) {
       return TaskMatchers.ownerMatches( part.substring( "assigned:".length() ) );
     }
+    if( part.startsWith( "#" ) ) {
+      return TaskMatchers.containsHashTag( part.substring( 1 ) );
+    }
     return new NameOrId( part );
   }
 

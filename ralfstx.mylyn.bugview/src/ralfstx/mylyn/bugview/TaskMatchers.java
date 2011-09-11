@@ -10,6 +10,7 @@
  ******************************************************************************/
 package ralfstx.mylyn.bugview;
 
+import ralfstx.mylyn.bugview.internal.matchers.ContainsHashTag;
 import ralfstx.mylyn.bugview.internal.matchers.IsCompleted;
 import ralfstx.mylyn.bugview.internal.matchers.IsEnhancement;
 import ralfstx.mylyn.bugview.internal.matchers.IsIncoming;
@@ -46,6 +47,10 @@ public final class TaskMatchers {
 
   public static TaskMatcher ownerMatches( String name ) {
     return new OwnerMatches( name );
+  }
+
+  public static TaskMatcher containsHashTag( String name ) {
+    return new ContainsHashTag( name );
   }
 
 }

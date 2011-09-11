@@ -20,7 +20,7 @@ import org.eclipse.mylyn.tasks.core.ITask;
 
 
 @SuppressWarnings( "restriction" )
-class MylynBridge {
+public class MylynBridge {
 
   static Collection<ITask> getAllTasks() {
     Collection<AbstractTask> tasks = TasksUiPlugin.getTaskList().getAllTasks();
@@ -29,6 +29,14 @@ class MylynBridge {
 
   static void openTaskInEditor( ITask selectedTask ) {
     TasksUiInternal.openTask( selectedTask, selectedTask.getTaskId() );
+  }
+
+  public static String getNotes( ITask task ) {
+    String result = null;
+    if( task instanceof AbstractTask ) {
+      result = ( (AbstractTask)task ).getNotes();
+    }
+    return result;
   }
 
 }

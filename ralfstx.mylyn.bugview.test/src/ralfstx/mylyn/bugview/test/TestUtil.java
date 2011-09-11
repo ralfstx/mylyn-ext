@@ -13,11 +13,13 @@ package ralfstx.mylyn.bugview.test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.ITask.SynchronizationState;
 import org.hamcrest.Matcher;
 
 
+@SuppressWarnings( "restriction" )
 public final class TestUtil {
 
   private TestUtil() {
@@ -64,6 +66,12 @@ public final class TestUtil {
   public static ITask mockTaskWithOwner( String name ) {
     ITask task = mock( ITask.class );
     when( task.getOwner() ).thenReturn( name );
+    return task;
+  }
+
+  public static ITask mockTaskWithNotes( String text ) {
+    AbstractTask task = mock( AbstractTask.class );
+    when( task.getNotes() ).thenReturn( text );
     return task;
   }
 

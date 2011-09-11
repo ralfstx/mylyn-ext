@@ -15,6 +15,7 @@ import static ralfstx.mylyn.bugview.test.TestUtil.*;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
+import org.junit.Before;
 import org.junit.Test;
 
 import ralfstx.mylyn.bugview.TaskMatchers;
@@ -24,17 +25,20 @@ import ralfstx.mylyn.bugview.internal.matchers.NameOrId;
 @SuppressWarnings( "unchecked" )
 public class SearchQueryParser_Test {
 
+  private SearchQueryParser parser;
+
+  @Before
+  public void setup() {
+    parser = new SearchQueryParser();
+  }
+
   @Test( expected = NullPointerException.class )
   public void parse_withNull() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
     parser.parse( null );
   }
 
   @Test
   public void parse_withEmptyString() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
     Matcher<ITask> result = parser.parse( "" );
 
     Matcher<ITask> expected = CoreMatchers.anything();
@@ -43,8 +47,6 @@ public class SearchQueryParser_Test {
 
   @Test
   public void parse_withSingleString() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
     Matcher<ITask> result = parser.parse( "foo" );
 
     Matcher<ITask> expected = CoreMatchers.allOf( new NameOrId( "foo" ) );
@@ -53,8 +55,6 @@ public class SearchQueryParser_Test {
 
   @Test
   public void parse_withTwoStrings() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
     Matcher<ITask> result = parser.parse( "foo bar" );
 
     Matcher<ITask> expected = CoreMatchers.allOf( new NameOrId( "foo" ),
@@ -64,8 +64,6 @@ public class SearchQueryParser_Test {
 
   @Test
   public void parse_stripsWhitespace() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
     Matcher<ITask> result = parser.parse( " foo\t  " );
 
     Matcher<ITask> expected = CoreMatchers.allOf( new NameOrId( "foo" ) );
@@ -74,8 +72,6 @@ public class SearchQueryParser_Test {
 
   @Test
   public void parse_incoming() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
     Matcher<ITask> result = parser.parse( ":incoming" );
 
     Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.isIncoming() );
@@ -84,8 +80,6 @@ public class SearchQueryParser_Test {
 
   @Test
   public void parse_outgoing() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
     Matcher<ITask> result = parser.parse( ":outgoing" );
 
     Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.isOutgoing() );
@@ -94,8 +88,6 @@ public class SearchQueryParser_Test {
 
   @Test
   public void parse_open() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
     Matcher<ITask> result = parser.parse( ":open" );
 
     Matcher<ITask> expected = CoreMatchers.allOf( CoreMatchers.not( TaskMatchers.isCompleted() ) );
@@ -104,8 +96,6 @@ public class SearchQueryParser_Test {
 
   @Test
   public void parse_defect() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
     Matcher<ITask> result = parser.parse( ":defect" );
 
     Matcher<ITask> expected = CoreMatchers.allOf( CoreMatchers.not( TaskMatchers.isEnhancement() ) );
@@ -114,8 +104,6 @@ public class SearchQueryParser_Test {
 
   @Test
   public void parse_enhancement() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
     Matcher<ITask> result = parser.parse( ":enhancement" );
 
     Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.isEnhancement() );
@@ -124,8 +112,6 @@ public class SearchQueryParser_Test {
 
   @Test
   public void parse_product() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
     Matcher<ITask> result = parser.parse( "product:foo" );
 
     Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.productMatches( "foo" ) );
@@ -134,8 +120,6 @@ public class SearchQueryParser_Test {
 
   @Test
   public void parse_productWithoutName() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
     Matcher<ITask> result = parser.parse( "product:" );
 
     Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.productMatches( "" ) );
@@ -144,8 +128,6 @@ public class SearchQueryParser_Test {
 
   @Test
   public void parse_owner() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
-
     Matcher<ITask> result = parser.parse( "assigned:foo" );
 
     Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.ownerMatches( "foo" ) );
@@ -153,13 +135,21 @@ public class SearchQueryParser_Test {
   }
 
   @Test
-  public void parse_mixed() throws Exception {
-    SearchQueryParser parser = new SearchQueryParser();
+  public void parse_hashtag() throws Exception {
+    Matcher<ITask> result = parser.parse( "#foo" );
 
-    Matcher<ITask> result = parser.parse( "foo :incoming" );
+    Matcher<ITask> expected = CoreMatchers.allOf( TaskMatchers.containsHashTag( "foo" ) );
+    assertMatcherEquals( expected, result );
+  }
+
+  @Test
+  public void parse_mixed() throws Exception {
+    Matcher<ITask> result = parser.parse( "foo :incoming #foo #bar" );
 
     Matcher<ITask> expected = CoreMatchers.allOf( new NameOrId( "foo" ),
-                                                  TaskMatchers.isIncoming() );
+                                                  TaskMatchers.isIncoming(),
+                                                  TaskMatchers.containsHashTag( "foo" ),
+                                                  TaskMatchers.containsHashTag( "bar" ) );
     assertMatcherEquals( expected, result );
   }
 
