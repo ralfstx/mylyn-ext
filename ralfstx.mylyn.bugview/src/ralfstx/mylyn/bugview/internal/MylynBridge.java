@@ -51,4 +51,8 @@ public class MylynBridge {
     return result;
   }
 
+  public static void synchronizeAllRepositories() {
+    TasksUiInternal.synchronizeAllRepositories(true);
+  }
+
 }

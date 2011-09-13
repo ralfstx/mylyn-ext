@@ -243,14 +243,23 @@ public class BugView extends ViewPart {
 
   private void makeActions() {
     ImageDescriptor refreshImage = Activator.getImageDescriptor( "/icons/refresh.gif" );
-    IAction refreshAction = new Action( "Refresh", refreshImage ) {
+    IAction refreshViewAction = new Action( "Refresh View", refreshImage ) {
       @Override
       public void run() {
         refreshViewer();
       }
     };
+    ImageDescriptor refreshAllImage
+      = Activator.getImageDescriptor( "/icons/repository-synchronize.gif" );
+    IAction refreshAllAction = new Action( "Refresh all Repositories", refreshAllImage ) {
+      @Override
+      public void run() {
+        MylynBridge.synchronizeAllRepositories();
+      }
+    };
     IToolBarManager toolBarManager = getViewSite().getActionBars().getToolBarManager();
-    toolBarManager.add( refreshAction );
+    toolBarManager.add( refreshViewAction );
+    toolBarManager.add( refreshAllAction );
     IMenuManager menuManager = getViewSite().getActionBars().getMenuManager();
     menuManager.add( new QueryFilterDropDownMenuAction( this ) );
   }
