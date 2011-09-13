@@ -19,7 +19,9 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -31,8 +33,12 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -75,6 +81,7 @@ public class BugView extends ViewPart {
 
   void setActiveQuery( IRepositoryQuery query ) {
     activeQuery = query;
+    updateIdColumnWidth();
     refreshViewer();
   }
 
@@ -155,9 +162,15 @@ public class BugView extends ViewPart {
   }
 
   private void createTableViewer( Composite parent ) {
-    Table table = new Table( parent, SWT.VIRTUAL );
+    Table table = new Table( parent, SWT.VIRTUAL | SWT.FULL_SELECTION );
     table.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
     table.setLinesVisible( true );
+    table.addControlListener( new ControlAdapter() {
+      @Override
+      public void controlResized( ControlEvent e ) {
+        layoutTable();
+      }
+    } );
     new TableColumn( table, SWT.LEFT ).setWidth( 80 );
     new TableColumn( table, SWT.LEFT ).setWidth( 400 );
     viewer = new TableViewer( table );
@@ -165,8 +178,43 @@ public class BugView extends ViewPart {
     viewer.setContentProvider( new ArrayContentProvider() );
     viewer.setComparator( new TaskLastModifiedComparator() );
     viewer.addFilter( new TaskViewerFilter() );
+    ColumnViewerToolTipSupport.enableFor( viewer );
     addStrikeThrough();
     addDoubleClickBehavior();
+  }
+
+  private void layoutTable() {
+    Table table = viewer.getTable();
+    int clientWidth = table.getClientArea().width;
+    int idWidth = table.getColumn( COL_ID ).getWidth();
+    table.getColumn( COL_TITLE ).setWidth( clientWidth - idWidth );
+  }
+
+  private void updateIdColumnWidth() {
+    Table table = viewer.getTable();
+    int iconWidth = 16;
+    int padding = 12;
+    int idWidth = calculateIdWidth() + iconWidth + padding;
+    table.getColumn( COL_ID ).setWidth( idWidth );
+  }
+
+  private int calculateIdWidth() {
+    int maxWidth = 0;
+    Table table = viewer.getTable();
+    Font boldFont = JFaceResources.getFontRegistry().getBold( JFaceResources.DEFAULT_FONT );
+    GC gc = new GC( table );
+    try {
+      gc.setFont( boldFont );
+      Collection<ITask> tasks = getTasks();
+      for( ITask task : tasks ) {
+        String id = task.getTaskId();
+        int width = gc.stringExtent( id ).x;
+        maxWidth = Math.max( maxWidth, width );
+      }
+    } finally {
+      gc.dispose();
+    }
+    return maxWidth;
   }
 
   private void addStrikeThrough() {

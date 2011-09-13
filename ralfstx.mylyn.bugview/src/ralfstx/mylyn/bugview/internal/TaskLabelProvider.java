@@ -12,10 +12,8 @@ package ralfstx.mylyn.bugview.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.IColorProvider;
-import org.eclipse.jface.viewers.IFontProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -23,9 +21,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 
 
-class TaskLabelProvider extends LabelProvider implements ITableLabelProvider,
-    IFontProvider, IColorProvider
-{
+class TaskLabelProvider extends ColumnLabelProvider {
 
   private static final ImageDescriptor TASK_ICON = Activator.getImageDescriptor( "/icons/task.gif" );
   private static final String COLOR_P1 = TaskLabelProvider.class.getName() + ".prio1";
@@ -63,6 +59,7 @@ class TaskLabelProvider extends LabelProvider implements ITableLabelProvider,
     return result;
   }
 
+  @Override
   public Color getForeground( Object element ) {
     if( element instanceof ITask ) {
       ITask task = (ITask)element;
@@ -83,10 +80,7 @@ class TaskLabelProvider extends LabelProvider implements ITableLabelProvider,
     return null;
   }
 
-  public Color getBackground( Object element ) {
-    return null;
-  }
-
+  @Override
   public Font getFont( Object element ) {
     if( element instanceof ITask ) {
       ITask task = (ITask)element;
@@ -95,6 +89,26 @@ class TaskLabelProvider extends LabelProvider implements ITableLabelProvider,
       }
     }
     return null;
+  }
+
+  @Override
+  public String getToolTipText( Object element ) {
+    if( element instanceof ITask ) {
+      ITask task = (ITask)element;
+      return task.getSummary();
+    }
+    return null;
+  }
+
+  @Override
+  public void update( ViewerCell cell ) {
+    Object element = cell.getElement();
+    int columnIndex = cell.getColumnIndex();
+    cell.setText( getColumnText( element, columnIndex ) );
+    cell.setImage( getColumnImage( element, columnIndex ) );
+    cell.setBackground( getBackground( element ) );
+    cell.setForeground( getForeground( element ) );
+    cell.setFont( getFont( element ) );
   }
 
 }
