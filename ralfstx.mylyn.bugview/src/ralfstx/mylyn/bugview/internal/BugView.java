@@ -15,7 +15,9 @@ import java.util.Date;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -26,6 +28,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -50,6 +53,7 @@ public class BugView extends ViewPart {
 
   private TableViewer viewer;
   private Text searchField;
+  private IRepositoryQuery activeQuery;
   private Matcher<ITask> toolbarMatcher = CoreMatchers.anything();
   private Matcher<ITask> searchMatcher = CoreMatchers.anything();
   private final SearchQueryParser queryParser = new SearchQueryParser();
@@ -67,6 +71,15 @@ public class BugView extends ViewPart {
   @Override
   public void setFocus() {
     viewer.getControl().setFocus();
+  }
+
+  void setActiveQuery( IRepositoryQuery query ) {
+    activeQuery = query;
+    refreshViewer();
+  }
+
+  IRepositoryQuery getActiveQuery() {
+    return activeQuery;
   }
 
   private void createQuickFilterArea( Composite parent ) {
@@ -188,13 +201,23 @@ public class BugView extends ViewPart {
         refreshViewer();
       }
     };
-    getViewSite().getActionBars().getToolBarManager().add( refreshAction );
+    IToolBarManager toolBarManager = getViewSite().getActionBars().getToolBarManager();
+    toolBarManager.add( refreshAction );
+    IMenuManager menuManager = getViewSite().getActionBars().getMenuManager();
+    menuManager.add( new QueryFilterDropDownMenuAction( this ) );
   }
 
   private void refreshViewer() {
-    Collection<ITask> tasks = MylynBridge.getAllTasks();
+    Collection<ITask> tasks = getTasks();
     viewer.setInput( tasks );
     updateStatusBar();
+  }
+
+  private Collection<ITask> getTasks() {
+    if( activeQuery != null ) {
+      return MylynBridge.getAllTasks( activeQuery );
+    }
+    return MylynBridge.getAllTasks();
   }
 
   private ITask getSelectedTask() {
