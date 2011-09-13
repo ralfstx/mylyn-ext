@@ -10,7 +10,8 @@
  ******************************************************************************/
 package ralfstx.mylyn.bugview.internal;
 
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ColorRegistry;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -20,27 +21,36 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 
+import ralfstx.mylyn.bugview.TaskMatcher;
+import ralfstx.mylyn.bugview.TaskMatchers;
+
 
 class TaskLabelProvider extends ColumnLabelProvider {
 
-  private static final ImageDescriptor TASK_ICON = Activator.getImageDescriptor( "/icons/task.gif" );
+  private static final String DEFECT_ICON = "defect-icon";
+  private static final String ENHANCEMENT_ICON = "enhancement-icon";
   private static final String COLOR_P1 = TaskLabelProvider.class.getName() + ".prio1";
   private static final String COLOR_P2 = TaskLabelProvider.class.getName() + ".prio2";
   private static final String COLOR_P4 = TaskLabelProvider.class.getName() + ".prio4";
   private static final String COLOR_P5 = TaskLabelProvider.class.getName() + ".prio5";
+  private final TaskMatcher enhancementMatcher;
 
   public TaskLabelProvider() {
-    JFaceResources.getColorRegistry().put( COLOR_P1, new RGB( 0xFF, 0, 0 ) );
-    JFaceResources.getColorRegistry().put( COLOR_P2, new RGB( 0x80, 0, 0 ) );
-    JFaceResources.getColorRegistry().put( COLOR_P4, new RGB( 0x80, 0x80, 0x80 ) );
-    JFaceResources.getColorRegistry().put( COLOR_P5, new RGB( 0xC0, 0xC0, 0xC0 ) );
+    enhancementMatcher = TaskMatchers.isEnhancement();
+    initializeImages();
+    initializeColors();
   }
 
   public Image getColumnImage( Object element, int columnIndex ) {
     Image result = null;
     if( element instanceof ITask ) {
       if( columnIndex == BugView.COL_ID ) {
-        result = TASK_ICON.createImage();
+        ITask task = (ITask)element;
+        if( enhancementMatcher.matches( task ) ) {
+          result = JFaceResources.getImageRegistry().get( ENHANCEMENT_ICON );
+        } else {
+          result = JFaceResources.getImageRegistry().get( DEFECT_ICON );
+        }
       }
     }
     return result;
@@ -109,6 +119,20 @@ class TaskLabelProvider extends ColumnLabelProvider {
     cell.setBackground( getBackground( element ) );
     cell.setForeground( getForeground( element ) );
     cell.setFont( getFont( element ) );
+  }
+
+  private static void initializeColors() {
+    ColorRegistry colorRegistry = JFaceResources.getColorRegistry();
+    colorRegistry.put( COLOR_P1, new RGB( 0xFF, 0, 0 ) );
+    colorRegistry.put( COLOR_P2, new RGB( 0x80, 0, 0 ) );
+    colorRegistry.put( COLOR_P4, new RGB( 0x80, 0x80, 0x80 ) );
+    colorRegistry.put( COLOR_P5, new RGB( 0xC0, 0xC0, 0xC0 ) );
+  }
+
+  private static void initializeImages() {
+    ImageRegistry imageRegistry = JFaceResources.getImageRegistry();
+    imageRegistry.put( DEFECT_ICON, Activator.getImageDescriptor( "/icons/defect.png" ) );
+    imageRegistry.put( ENHANCEMENT_ICON, Activator.getImageDescriptor( "/icons/enhancement.png" ) );
   }
 
 }
