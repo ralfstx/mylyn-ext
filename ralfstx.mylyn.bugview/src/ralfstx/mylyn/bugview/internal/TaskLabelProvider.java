@@ -34,9 +34,13 @@ class TaskLabelProvider extends ColumnLabelProvider {
   private static final String COLOR_P4 = TaskLabelProvider.class.getName() + ".prio4";
   private static final String COLOR_P5 = TaskLabelProvider.class.getName() + ".prio5";
   private final TaskMatcher enhancementMatcher;
+  private final TaskMatcher incomingMatcher;
+  private final TaskMatcher outgoingMatcher;
 
   public TaskLabelProvider() {
     enhancementMatcher = TaskMatchers.isEnhancement();
+    incomingMatcher = TaskMatchers.isIncoming();
+    outgoingMatcher = TaskMatchers.isOutgoing();
     initializeImages();
     initializeColors();
   }
@@ -94,8 +98,11 @@ class TaskLabelProvider extends ColumnLabelProvider {
   public Font getFont( Object element ) {
     if( element instanceof ITask ) {
       ITask task = (ITask)element;
-      if( task.getSynchronizationState().isIncoming() ) {
+      if( incomingMatcher.matches( task ) ) {
         return JFaceResources.getFontRegistry().getBold( JFaceResources.DEFAULT_FONT );
+      }
+      if( outgoingMatcher.matches( task ) ) {
+        return JFaceResources.getFontRegistry().getItalic( JFaceResources.DEFAULT_FONT );
       }
     }
     return null;
