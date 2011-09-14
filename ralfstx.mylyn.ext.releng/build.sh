@@ -7,7 +7,7 @@ targetRepo=$HOME/eclipse/targets/eclipse-rcp-indigo
 
 # build
 
-cd "$HOME/git/mylyn-ext/ralfstx.mylyn.bugview.releng"
+cd "$HOME/git/mylyn-ext/ralfstx.mylyn.ext.releng"
 
 $MVN -DtargetRepo=$targetRepo clean package || exit 1
 
