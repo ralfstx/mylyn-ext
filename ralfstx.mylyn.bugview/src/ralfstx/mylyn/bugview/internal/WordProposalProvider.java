@@ -11,6 +11,8 @@
 package ralfstx.mylyn.bugview.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.jface.fieldassist.ContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposal;
@@ -19,8 +21,7 @@ import org.eclipse.jface.fieldassist.IContentProposalProvider;
 
 public class WordProposalProvider implements IContentProposalProvider {
 
-  private static final String[] EMPTY = new String[ 0 ];
-  private String[] suggestions = EMPTY;
+  private List<String> suggestions = Collections.emptyList();
 
   public IContentProposal[] getProposals( String contents, int position ) {
     ArrayList<IContentProposal> list = new ArrayList<IContentProposal>();
@@ -42,8 +43,8 @@ public class WordProposalProvider implements IContentProposalProvider {
     return list.toArray( new IContentProposal[ list.size() ] );
   }
 
-  public void setSuggestions( String... suggestions ) {
-    this.suggestions = suggestions;
+  public void setSuggestions( List<String> suggestions ) {
+    this.suggestions = new ArrayList<String>( suggestions );
   }
 
   private static int findWordStart( String string, int position ) {

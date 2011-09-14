@@ -11,6 +11,8 @@
 package ralfstx.mylyn.bugview.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.hamcrest.CoreMatchers;
@@ -40,9 +42,9 @@ public class SearchQueryParser {
     return CoreMatchers.allOf( result );
   }
 
-  public static String[] getSuggestions() {
-    return new String[] { ":incoming", ":outgoing", ":open", ":defect", ":enhancement", "product:",
-        "assigned:" };
+  public static List<String> getSuggestions() {
+    return Arrays.asList( new String[] { ":incoming", ":outgoing", ":open", ":defect",
+        ":enhancement", "product:", "assigned:" } );
   }
 
   private static Matcher<ITask> getMatcherForPart( String part ) {

@@ -10,8 +10,10 @@
  ******************************************************************************/
 package ralfstx.mylyn.bugview.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -76,6 +78,7 @@ public class BugView extends ViewPart {
     addContentProposalToSearchField();
     makeActions();
     refreshViewer();
+    refreshAutoSuggestions();
   }
 
   @Override
@@ -87,6 +90,7 @@ public class BugView extends ViewPart {
     activeQuery = query;
     updateIdColumnWidth();
     refreshViewer();
+    refreshAutoSuggestions();
   }
 
   IRepositoryQuery getActiveQuery() {
@@ -166,7 +170,6 @@ public class BugView extends ViewPart {
     ContentProposalAdapter proposalAdapter
       = new ContentProposalAdapter( searchField, controlAdapter, proposalProvider, null, null );
     proposalAdapter.setProposalAcceptanceStyle( ContentProposalAdapter.PROPOSAL_REPLACE );
-    proposalProvider.setSuggestions( SearchQueryParser.getSuggestions() );
   }
 
   private void refreshFilter() {
@@ -260,6 +263,7 @@ public class BugView extends ViewPart {
       @Override
       public void run() {
         refreshViewer();
+        refreshAutoSuggestions();
       }
     };
     ImageDescriptor refreshAllImage
@@ -281,6 +285,34 @@ public class BugView extends ViewPart {
     Collection<ITask> tasks = getTasks();
     viewer.setInput( tasks );
     updateStatusBar();
+  }
+
+  private void refreshAutoSuggestions() {
+    ArrayList<String> suggestions = new ArrayList<String>();
+    List<String> initialSuggestions = SearchQueryParser.getSuggestions();
+    List<String> allTags = findAllTags();
+    suggestions.addAll( initialSuggestions );
+    suggestions.addAll( allTags );
+    proposalProvider.setSuggestions( suggestions );
+  }
+
+  private List<String> findAllTags() {
+    List<String> allTags = new ArrayList<String>();
+    Collection<ITask> tasks = getTasks();
+    HashTagParser tagParser = new HashTagParser();
+    for( ITask task : tasks ) {
+      String notes = MylynBridge.getNotes( task );
+      if( notes != null ) {
+        List<String> foundTags = tagParser.parse( notes );
+        for( String tag : foundTags ) {
+          String prefixedTag = "#" + tag;
+          if( !allTags.contains( prefixedTag ) ) {
+            allTags.add( prefixedTag );
+          }
+        }
+      }
+    }
+    return allTags;
   }
 
   private Collection<ITask> getTasks() {

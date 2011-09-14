@@ -12,6 +12,9 @@ package ralfstx.mylyn.bugview.internal;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +37,7 @@ public class WordProposalProvider_Test {
 
   @Test
   public void getProposals_afterFirstChar() throws Exception {
-    provider.setSuggestions( "foo" );
+    provider.setSuggestions( createList( "foo" ) );
 
     IContentProposal[] proposals = provider.getProposals( "f", 1 );
 
@@ -46,7 +49,7 @@ public class WordProposalProvider_Test {
 
   @Test
   public void getProposals_afterSecondChar() throws Exception {
-    provider.setSuggestions( "foo" );
+    provider.setSuggestions( createList( "foo" ) );
 
     IContentProposal[] proposals = provider.getProposals( "fo", 2 );
 
@@ -58,7 +61,7 @@ public class WordProposalProvider_Test {
 
   @Test
   public void getProposals_afterLastChar() throws Exception {
-    provider.setSuggestions( "foo" );
+    provider.setSuggestions( createList( "foo" ) );
 
     IContentProposal[] proposals = provider.getProposals( "foo", 3 );
 
@@ -70,7 +73,7 @@ public class WordProposalProvider_Test {
 
   @Test
   public void getProposals_inWord() throws Exception {
-    provider.setSuggestions( "foo" );
+    provider.setSuggestions( createList( "foo" ) );
 
     IContentProposal[] proposals = provider.getProposals( "for", 2 );
 
@@ -82,7 +85,7 @@ public class WordProposalProvider_Test {
 
   @Test
   public void getProposals_withPreceedingWord() throws Exception {
-    provider.setSuggestions( "foo" );
+    provider.setSuggestions( createList( "foo" ) );
 
     IContentProposal[] proposals = provider.getProposals( "bar f", 5 );
 
@@ -94,7 +97,7 @@ public class WordProposalProvider_Test {
 
   @Test
   public void getProposals_withPreceedingAndSubsequentWord() throws Exception {
-    provider.setSuggestions( "bar" );
+    provider.setSuggestions( createList( "bar" ) );
 
     IContentProposal[] proposals = provider.getProposals( "foo bao baz", 5 );
 
@@ -106,7 +109,7 @@ public class WordProposalProvider_Test {
 
   @Test
   public void getProposals_withMultipleSuggestions() throws Exception {
-    provider.setSuggestions( "foo", "bar", "baz" );
+    provider.setSuggestions( createList( "foo", "bar", "baz" ) );
 
     IContentProposal[] proposals = provider.getProposals( "ba", 2 );
 
@@ -117,7 +120,7 @@ public class WordProposalProvider_Test {
 
   @Test
   public void getProposals_afterWhitespace() throws Exception {
-    provider.setSuggestions( "foo" );
+    provider.setSuggestions( createList( "foo" ) );
 
     IContentProposal[] proposals = provider.getProposals( " ", 1 );
 
@@ -126,11 +129,19 @@ public class WordProposalProvider_Test {
 
   @Test
   public void getProposals_afterWhitespaceAfterWord() throws Exception {
-    provider.setSuggestions( "foo" );
+    provider.setSuggestions( createList( "foo" ) );
 
     IContentProposal[] proposals = provider.getProposals( "foo ", 4 );
 
     assertEquals( 0, proposals.length );
+  }
+
+  private static List<String> createList( String... strings ) {
+    ArrayList<String> result = new ArrayList<String>();
+    for( String string : strings ) {
+      result.add( string );
+    }
+    return result;
   }
 
 }
