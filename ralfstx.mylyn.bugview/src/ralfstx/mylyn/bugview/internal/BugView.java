@@ -18,6 +18,8 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -63,6 +65,7 @@ public class BugView extends ViewPart {
   private Matcher<ITask> toolbarMatcher = CoreMatchers.anything();
   private Matcher<ITask> searchMatcher = CoreMatchers.anything();
   private final SearchQueryParser queryParser = new SearchQueryParser();
+  private WordProposalProvider proposalProvider;
 
   @Override
   public void createPartControl( Composite parent ) {
@@ -70,6 +73,7 @@ public class BugView extends ViewPart {
     createQuickFilterArea( parent );
     createSearchTextField( parent );
     createTableViewer( parent );
+    addContentProposalToSearchField();
     makeActions();
     refreshViewer();
   }
@@ -154,6 +158,15 @@ public class BugView extends ViewPart {
         refreshFilter();
       }
     } );
+  }
+
+  private void addContentProposalToSearchField() {
+    proposalProvider = new WordProposalProvider();
+    TextContentAdapter controlAdapter = new TextContentAdapter();
+    ContentProposalAdapter proposalAdapter
+      = new ContentProposalAdapter( searchField, controlAdapter, proposalProvider, null, null );
+    proposalAdapter.setProposalAcceptanceStyle( ContentProposalAdapter.PROPOSAL_REPLACE );
+    proposalProvider.setSuggestions( SearchQueryParser.getSuggestions() );
   }
 
   private void refreshFilter() {

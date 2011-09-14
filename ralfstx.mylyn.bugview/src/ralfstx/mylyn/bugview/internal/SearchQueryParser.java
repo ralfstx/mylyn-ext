@@ -40,6 +40,11 @@ public class SearchQueryParser {
     return CoreMatchers.allOf( result );
   }
 
+  public static String[] getSuggestions() {
+    return new String[] { ":incoming", ":outgoing", ":open", ":defect", ":enhancement", "product:",
+        "assigned:" };
+  }
+
   private static Matcher<ITask> getMatcherForPart( String part ) {
     if( part.length() == 0 ) {
       return null;
