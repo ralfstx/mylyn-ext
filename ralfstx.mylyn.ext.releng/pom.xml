@@ -13,17 +13,17 @@
     <maven>3.0</maven>
   </prerequisites>
 
-  <name>Parent POM for Eclipse Addons</name>
+  <name>Parent POM for Mylyn Extensions</name>
 
-  <groupId>ralfstx.eclipse.addons</groupId>
-  <artifactId>ralfstx.eclipse.addons.parent</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <groupId>ralfstx.mylyn.ext</groupId>
+  <artifactId>ralfstx.mylyn.ext.releng</artifactId>
+  <version>0.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
-    <module>ralfstx.mylyn.bugview</module>
-    <module>ralfstx.mylyn.bugview.feature</module>
-    <module>ralfstx.eclipse.addons.repository</module>
+    <module>../ralfstx.mylyn.bugview</module>
+    <module>../ralfstx.mylyn.bugview.feature</module>
+    <module>repository</module>
   </modules>
 
   <!-- repositories to get pre-built pieces from -->
