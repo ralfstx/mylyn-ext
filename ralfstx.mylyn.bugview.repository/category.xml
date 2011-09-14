@@ -7,7 +7,7 @@
 
   <feature url="../ralfstx.mylyn.bugview.feature"
       id="ralfstx.mylyn.bugview.feature"
-      version="0.1.0.qualifier">
+      version="0.2.0.qualifier">
     <category name="ralfstx.mylyn.bugview"/>
   </feature>
 

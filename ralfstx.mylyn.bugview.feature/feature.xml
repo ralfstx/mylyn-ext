@@ -2,7 +2,7 @@
 <feature
       id="ralfstx.mylyn.bugview.feature"
       label="Bugs View for Mylyn"
-      version="0.1.0.qualifier"
+      version="0.2.0.qualifier"
       provider-name="ralfstx">
 
    <description>
