@@ -80,7 +80,7 @@ public class BugView extends ViewPart {
 
   @Override
   public void setFocus() {
-    viewer.getControl().setFocus();
+    searchField.setFocus();
   }
 
   void setActiveQuery( IRepositoryQuery query ) {
