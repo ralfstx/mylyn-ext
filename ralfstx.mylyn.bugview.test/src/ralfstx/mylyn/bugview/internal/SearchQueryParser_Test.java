@@ -143,6 +143,15 @@ public class SearchQueryParser_Test {
   }
 
   @Test
+  public void parse_not() throws Exception {
+    Matcher<ITask> result = parser.parse( "!foo" );
+
+    Matcher<ITask> expected
+      = CoreMatchers.allOf( CoreMatchers.not( new NameOrId( "foo" ) ) );
+    assertMatcherEquals( expected, result );
+  }
+
+  @Test
   public void parse_mixed() throws Exception {
     Matcher<ITask> result = parser.parse( "foo :incoming #foo #bar" );
 

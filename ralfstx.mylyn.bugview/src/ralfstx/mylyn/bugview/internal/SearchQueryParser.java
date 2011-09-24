@@ -51,6 +51,9 @@ public class SearchQueryParser {
     if( part.length() == 0 ) {
       return null;
     }
+    if( part.startsWith( "!" ) ) {
+      return CoreMatchers.not( getMatcherForPart( part.substring( 1 ) ) );
+    }
     if( ":incoming".equals( part ) ) {
       return TaskMatchers.isIncoming();
     }
